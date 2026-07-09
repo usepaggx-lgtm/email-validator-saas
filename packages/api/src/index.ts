@@ -1728,16 +1728,15 @@ app.post('/api/affiliate/track-ref', async (c) => {
 
 app.get('/api/health', (c) => c.json({ status: 'ok', timestamp: Date.now() }))
 
-const WHATSAPP_SERVICE_URL = process.env.WHATSAPP_SERVICE_URL || 'http://localhost:3003'
-const WHATSAPP_API_KEY = process.env.WHATSAPP_API_KEY || 'dev-key'
-
 async function proxyWhatsapp(c: any, path: string, method: string = 'GET') {
   try {
+    const baseUrl = c.env.WHATSAPP_SERVICE_URL || 'http://localhost:3003'
+    const apiKey = c.env.WHATSAPP_API_KEY || 'dev-key'
     const body = method === 'POST' || method === 'PUT' || method === 'DELETE' ? await c.req.json().catch(() => ({})) : undefined
-    const url = `${WHATSAPP_SERVICE_URL}${path}${c.req.query() ? '?' + new URLSearchParams(c.req.query()).toString() : ''}`
+    const url = `${baseUrl}${path}${c.req.query() ? '?' + new URLSearchParams(c.req.query()).toString() : ''}`
     const res = await fetch(url, {
       method,
-      headers: { 'Content-Type': 'application/json', 'x-api-key': WHATSAPP_API_KEY },
+      headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey },
       body: body ? JSON.stringify(body) : undefined,
     })
     const data = await res.json()

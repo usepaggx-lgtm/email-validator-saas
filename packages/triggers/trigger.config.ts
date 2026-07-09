@@ -4,6 +4,8 @@ export default defineConfig({
   project: "proj_gkaupycpueqymbqlvcgy",
   runtime: "node",
   logLevel: "info",
+  maxDuration: 300,
+  dirs: ["./src"],
   retries: {
     enabled: true,
     maxAttempts: 3,

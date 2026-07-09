@@ -1,16 +1,12 @@
-import { task, cronTriggers, wait } from "@trigger.dev/sdk";
+import { task, schedules, wait } from "@trigger.dev/sdk";
 import { z } from "zod";
 
 const API_URL = process.env.WHATSAPP_API_URL || "http://localhost:8787/api/whatsapp";
-const AUTH_TOKEN = process.env.WHATSAPP_AUTH_TOKEN || "";
 
 async function callWhatsapp(path: string, body?: any) {
-  const headers: Record<string, string> = { "Content-Type": "application/json" };
-  if (AUTH_TOKEN) headers["Authorization"] = `Bearer ${AUTH_TOKEN}`;
-
   const res = await fetch(`${API_URL}${path}`, {
     method: body ? "POST" : "GET",
-    headers,
+    headers: { "Content-Type": "application/json" },
     body: body ? JSON.stringify(body) : undefined,
   });
   if (!res.ok) throw new Error(`WhatsApp API error ${res.status}: ${await res.text()}`);
@@ -62,7 +58,6 @@ export const scheduleCampaign = task({
     instanceId: z.string(),
     to: z.string(),
     text: z.string(),
-    cronExpression: z.string(),
   }),
   run: async ({ instanceId, to, text }) => {
     await callWhatsapp("/message/text", { id: instanceId, to, text });
@@ -97,9 +92,9 @@ export const broadcastToGroup = task({
   },
 });
 
-export const checkInstancesHealth = cronTriggers("whatsapp-health-check", {
+export const healthCheck = task({
+  id: "whatsapp-health-check",
   schema: z.object({}),
-  cron: "*/5 * * * *",
   run: async () => {
     const { instances } = await callWhatsapp("/instances");
     const unhealthy = instances.filter((i: any) => i.status === "disconnected");
@@ -107,15 +102,19 @@ export const checkInstancesHealth = cronTriggers("whatsapp-health-check", {
   },
 });
 
-export const birthdayBroadcast = cronTriggers("whatsapp-birthday", {
+export const healthCheckSchedule = schedules.task({
+  task: healthCheck,
+  id: "whatsapp-health-check-schedule",
+  cron: "*/5 * * * *",
+});
+
+export const birthdayBroadcast = task({
+  id: "whatsapp-birthday",
   schema: z.object({
     instanceId: z.string(),
     contacts: z.array(z.object({ to: z.string(), name: z.string() })),
   }),
-  cron: "0 9 * * *",
   run: async ({ instanceId, contacts }) => {
-    const today = new Date();
-    const todayStr = `${today.getMonth() + 1}-${today.getDate()}`;
     for (const contact of contacts) {
       await callWhatsapp("/message/text", {
         id: instanceId, to: contact.to,
@@ -124,4 +123,10 @@ export const birthdayBroadcast = cronTriggers("whatsapp-birthday", {
     }
     return { sent: contacts.length };
   },
+});
+
+export const birthdaySchedule = schedules.task({
+  task: birthdayBroadcast,
+  id: "whatsapp-birthday-schedule",
+  cron: "0 9 * * *",
 });
