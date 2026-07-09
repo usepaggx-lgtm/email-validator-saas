@@ -1,5 +1,8 @@
 node_modules/
 dist/
 .next/
+out/
+.wrangler/
 *.log
 .env.local
+sessions/
