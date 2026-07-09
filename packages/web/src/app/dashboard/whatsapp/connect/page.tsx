@@ -1,120 +1,112 @@
 'use client'
 
-import { useState, useRef, useCallback, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 import { QrCode, Smartphone, Loader2, ArrowLeft, Check, Link, RefreshCw } from 'lucide-react'
 import { authFetch } from '@/lib/utils'
+import { useRouter } from 'next/navigation'
 
 type Step = 'create' | 'connect' | 'success'
-type Tab = 'qr' | 'pairing'
+type Method = 'qr' | 'pairing'
 
-export default function WhatsAppConnectPage() {
+export default function ConnectPage() {
   const router = useRouter()
   const [step, setStep] = useState<Step>('create')
-  const [tab, setTab] = useState<Tab>('qr')
-  const [name, setName] = useState('')
+  const [method, setMethod] = useState<Method>('qr')
+  const [instanceName, setInstanceName] = useState('')
+  const [instanceId, setInstanceId] = useState('')
   const [phoneNumber, setPhoneNumber] = useState('')
-  const [instanceId, setInstanceId] = useState<string | null>(null)
-  const [qrCode, setQrCode] = useState<string | null>(null)
-  const [pairingCode, setPairingCode] = useState<string | null>(null)
-  const [loading, setLoading] = useState(false)
+  const [qrCode, setQrCode] = useState('')
+  const [pairingCode, setPairingCode] = useState('')
+  const [creating, setCreating] = useState(false)
+  const [connecting, setConnecting] = useState(false)
   const [error, setError] = useState('')
-  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
-  const clearPoll = useCallback(() => {
-    if (pollRef.current) { clearInterval(pollRef.current); pollRef.current = null }
-  }, [])
-
-  useEffect(() => () => clearPoll(), [clearPoll])
-
-  async function handleCreate(e: React.FormEvent) {
+  const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!name.trim() || loading) return
-    setLoading(true); setError('')
+    setError('')
+    if (!instanceName.trim()) { setError('Instance name is required'); return }
+    setCreating(true)
     try {
-      const data = await authFetch('/api/whatsapp/instance/create', {
-        method: 'POST',
-        body: JSON.stringify({ name: name.trim() }),
-      })
-      if (data.error) { setError(data.error); return }
-      setInstanceId(data.id)
+      const res = await authFetch('/api/whatsapp/instance/create', { method: 'POST', body: JSON.stringify({ name: instanceName.trim() }) })
+      if (res.error) { setError(res.error); return }
+      setInstanceId(res.id)
       setStep('connect')
     } catch { setError('Failed to create instance') }
-    finally { setLoading(false) }
+    finally { setCreating(false) }
   }
 
-  async function handleConnectQR() {
-    if (!instanceId || loading) return
-    setLoading(true); setError(''); setQrCode(null)
+  const handleConnectQR = async () => {
+    setError('')
+    setConnecting(true)
+    setQrCode('')
     try {
-      const data = await authFetch('/api/whatsapp/instance/connect', {
-        method: 'POST',
-        body: JSON.stringify({ id: instanceId }),
-      })
-      if (data.error) { setError(data.error); return }
-      if (data.qr) setQrCode(data.qr)
-      pollRef.current = setInterval(async () => {
-        try {
-          const statusData = await authFetch(`/api/whatsapp/instance/${instanceId}/status`)
-          if (statusData.status === 'connected') {
-            clearPoll()
-            setStep('success')
-          }
-        } catch {}
-      }, 3000)
+      const res = await authFetch('/api/whatsapp/instance/connect', { method: 'POST', body: JSON.stringify({ id: instanceId }) })
+      if (res.error) { setError(res.error); return }
+      setQrCode(res.qrCode)
     } catch { setError('Failed to connect') }
-    finally { setLoading(false) }
+    finally { setConnecting(false) }
   }
 
-  async function handlePairing() {
-    if (!instanceId || !phoneNumber.trim() || loading) return
-    setLoading(true); setError(''); setPairingCode(null)
+  const handlePairing = async () => {
+    setError('')
+    if (!phoneNumber.trim()) { setError('Phone number is required'); return }
+    setConnecting(true)
+    setPairingCode('')
     try {
-      const data = await authFetch('/api/whatsapp/instance/pairing', {
-        method: 'POST',
-        body: JSON.stringify({ id: instanceId, phoneNumber: phoneNumber.trim() }),
-      })
-      if (data.error) { setError(data.error); return }
-      setPairingCode(data.code || data.pairingCode)
-    } catch { setError('Failed to get pairing code') }
-    finally { setLoading(false) }
+      const res = await authFetch('/api/whatsapp/instance/pairing', { method: 'POST', body: JSON.stringify({ id: instanceId, phoneNumber: phoneNumber.trim() }) })
+      if (res.error) { setError(res.error); return }
+      setPairingCode(res.pairingCode)
+    } catch { setError('Failed to send pairing code') }
+    finally { setConnecting(false) }
   }
+
+  const connected = qrCode || pairingCode
 
   return (
-    <div className="max-w-lg mx-auto">
-      <div className="bg-gradient-to-r from-purple-600 to-indigo-500 rounded-2xl p-6 mb-6 text-white">
-        <button onClick={() => router.back()} className="flex items-center gap-1.5 text-sm text-white/80 hover:text-white mb-3 transition-colors">
-          <ArrowLeft size={16} /> Back
-        </button>
-        <h1 className="text-xl font-bold">Connect WhatsApp</h1>
-        <p className="text-sm text-white/80 mt-1">Link your WhatsApp instance to send messages</p>
+    <>
+      <div className="bg-gradient-to-r from-purple-600 to-indigo-500 rounded-2xl p-6 sm:p-8 mb-6 text-white">
+        <div className="flex items-center gap-4">
+          {step !== 'create' && (
+            <button onClick={() => { setStep('create'); setQrCode(''); setPairingCode(''); setError('') }} className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center hover:bg-white/30 transition-colors">
+              <ArrowLeft size={20} />
+            </button>
+          )}
+          <div>
+            <h1 className="text-2xl font-bold">
+              {step === 'create' ? 'Connect WhatsApp' : step === 'connect' ? 'Scan QR Code' : 'Connected!'}
+            </h1>
+            <p className="text-purple-100 text-sm mt-1">
+              {step === 'create' ? 'Create a new WhatsApp instance' : step === 'connect' ? `Instance: ${instanceName}` : 'Your instance is ready'}
+            </p>
+          </div>
+        </div>
       </div>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-2xl p-4 mb-6">
-          <p className="text-sm text-red-700">{error}</p>
+        <div className="mb-5 bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl px-4 py-3">
+          {error}
         </div>
       )}
 
       {step === 'create' && (
         <div className="bg-white rounded-2xl border border-gray-200 p-6">
-          <h2 className="text-base font-semibold text-gray-900 mb-4">Create Instance</h2>
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">Create Instance</h2>
           <form onSubmit={handleCreate}>
             <label className="block text-sm font-medium text-gray-700 mb-1.5">Instance Name</label>
             <input
               type="text"
-              value={name}
-              onChange={e => setName(e.target.value)}
-              placeholder="My WhatsApp Instance"
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 mb-4"
+              value={instanceName}
+              onChange={e => setInstanceName(e.target.value)}
+              placeholder="My WhatsApp"
+              className="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all"
             />
             <button
               type="submit"
-              disabled={loading || !name.trim()}
-              className="w-full py-2.5 bg-gradient-to-r from-purple-600 to-indigo-500 text-white text-sm font-semibold rounded-xl hover:shadow-lg disabled:opacity-50 flex items-center justify-center gap-2"
+              disabled={creating}
+              className="mt-4 inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-500 text-white text-sm font-semibold rounded-xl hover:shadow-lg transition-all disabled:opacity-60"
             >
-              {loading ? <Loader2 size={16} className="animate-spin" /> : <Link size={16} />}
-              {loading ? 'Creating...' : 'Create Instance'}
+              {creating ? <Loader2 size={16} className="animate-spin" /> : <Link size={16} />}
+              {creating ? 'Creating...' : 'Create Instance'}
             </button>
           </form>
         </div>
@@ -122,122 +114,120 @@ export default function WhatsAppConnectPage() {
 
       {step === 'connect' && (
         <>
-          <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden mb-6">
-            <div className="flex border-b border-gray-200">
+          <div className="flex gap-2 mb-5">
+            <button
+              onClick={() => setMethod('qr')}
+              className={`flex items-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-xl transition-all ${method === 'qr' ? 'bg-purple-600 text-white shadow-md' : 'bg-white text-gray-600 border border-gray-200 hover:border-purple-300'}`}
+            >
+              <QrCode size={16} />
+              QR Code
+            </button>
+            <button
+              onClick={() => setMethod('pairing')}
+              className={`flex items-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-xl transition-all ${method === 'pairing' ? 'bg-purple-600 text-white shadow-md' : 'bg-white text-gray-600 border border-gray-200 hover:border-purple-300'}`}
+            >
+              <Smartphone size={16} />
+              Pairing Code
+            </button>
+          </div>
+
+          {method === 'qr' && (
+            <div className="bg-white rounded-2xl border border-gray-200 p-6 text-center">
+              {qrCode ? (
+                <>
+                  <img src={qrCode} alt="QR Code" className="mx-auto w-56 h-56" />
+                  <p className="text-sm text-gray-500 mt-4">Scan this QR code with your WhatsApp app</p>
+                  <button
+                    onClick={() => { setQrCode(''); setConnecting(false) }}
+                    className="mt-3 inline-flex items-center gap-2 text-sm text-purple-600 font-medium hover:text-purple-700"
+                  >
+                    <RefreshCw size={14} />
+                    Refresh QR Code
+                  </button>
+                </>
+              ) : (
+                <>
+                  <div className="w-16 h-16 rounded-2xl bg-purple-50 flex items-center justify-center mx-auto mb-4">
+                    <QrCode size={28} className="text-purple-400" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-1">Connect via QR Code</h3>
+                  <p className="text-sm text-gray-500 mb-5">Open WhatsApp on your phone and scan the QR code</p>
+                  <button
+                    onClick={handleConnectQR}
+                    disabled={connecting}
+                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-500 text-white text-sm font-semibold rounded-xl hover:shadow-lg transition-all disabled:opacity-60"
+                  >
+                    {connecting ? <Loader2 size={16} className="animate-spin" /> : <QrCode size={16} />}
+                    {connecting ? 'Generating QR Code...' : 'Generate QR Code'}
+                  </button>
+                </>
+              )}
+            </div>
+          )}
+
+          {method === 'pairing' && (
+            <div className="bg-white rounded-2xl border border-gray-200 p-6">
+              {pairingCode ? (
+                <div className="text-center">
+                  <div className="w-16 h-16 rounded-2xl bg-green-50 flex items-center justify-center mx-auto mb-4">
+                    <Smartphone size={28} className="text-green-500" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Pairing Code</h3>
+                  <p className="text-sm text-gray-500 mb-5">Enter this code in your WhatsApp app</p>
+                  <div className="bg-gray-50 border border-gray-200 rounded-xl px-6 py-4 inline-block">
+                    <span className="text-3xl font-mono font-bold tracking-widest text-gray-900">{pairingCode}</span>
+                  </div>
+                  <button
+                    onClick={() => { setPairingCode(''); setConnecting(false) }}
+                    className="mt-4 inline-flex items-center gap-2 text-sm text-purple-600 font-medium hover:text-purple-700"
+                  >
+                    <RefreshCw size={14} />
+                    Generate New Code
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Connect via Pairing Code</h3>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Phone Number</label>
+                  <input
+                    type="text"
+                    value={phoneNumber}
+                    onChange={e => setPhoneNumber(e.target.value)}
+                    placeholder="5511999999999"
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all"
+                  />
+                  <p className="text-xs text-gray-400 mt-1.5">Enter the phone number with country code (e.g. 5511999999999)</p>
+                  <button
+                    onClick={handlePairing}
+                    disabled={connecting}
+                    className="mt-4 inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-500 text-white text-sm font-semibold rounded-xl hover:shadow-lg transition-all disabled:opacity-60"
+                  >
+                    {connecting ? <Loader2 size={16} className="animate-spin" /> : <Smartphone size={16} />}
+                    {connecting ? 'Requesting Code...' : 'Request Pairing Code'}
+                  </button>
+                </>
+              )}
+            </div>
+          )}
+
+          {connected && (
+            <div className="mt-5 bg-green-50 border border-green-200 rounded-2xl p-5 text-center">
+              <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-3">
+                <Check size={24} className="text-green-600" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-1">Waiting for connection</h3>
+              <p className="text-sm text-gray-500 mb-4">Once you scan the QR code or enter the pairing code, the connection will be established automatically</p>
               <button
-                onClick={() => setTab('qr')}
-                className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-medium transition-colors ${
-                  tab === 'qr' ? 'text-purple-600 border-b-2 border-purple-600' : 'text-gray-500 hover:text-gray-700'
-                }`}
+                onClick={() => router.push(`/dashboard/whatsapp/view?id=${instanceId}`)}
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-500 text-white text-sm font-semibold rounded-xl hover:shadow-lg transition-all"
               >
-                <QrCode size={16} /> QR Code
-              </button>
-              <button
-                onClick={() => setTab('pairing')}
-                className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-medium transition-colors ${
-                  tab === 'pairing' ? 'text-purple-600 border-b-2 border-purple-600' : 'text-gray-500 hover:text-gray-700'
-                }`}
-              >
-                <Smartphone size={16} /> Pairing Code
+                <Check size={16} />
+                Go to Instance
               </button>
             </div>
-
-            {tab === 'qr' && (
-              <div className="p-6 text-center">
-                {!qrCode ? (
-                  <div className="py-8">
-                    <QrCode size={48} className="mx-auto text-gray-300 mb-4" />
-                    <p className="text-sm text-gray-600 mb-4">Click the button below to generate a QR code, then scan it with your WhatsApp app.</p>
-                    <button
-                      onClick={handleConnectQR}
-                      disabled={loading}
-                      className="py-2.5 px-6 bg-gradient-to-r from-purple-600 to-indigo-500 text-white text-sm font-semibold rounded-xl hover:shadow-lg disabled:opacity-50 inline-flex items-center gap-2"
-                    >
-                      {loading ? <Loader2 size={16} className="animate-spin" /> : <QrCode size={16} />}
-                      {loading ? 'Generating...' : 'Generate QR Code'}
-                    </button>
-                  </div>
-                ) : (
-                  <div>
-                    <p className="text-sm text-gray-600 mb-4">Scan this QR code with your WhatsApp app</p>
-                    <img src={qrCode} alt="WhatsApp QR Code" className="mx-auto rounded-xl border border-gray-200 max-w-[280px]" />
-                    <div className="mt-4 flex items-center justify-center gap-2 text-sm text-amber-600">
-                      <Loader2 size={14} className="animate-spin" />
-                      Waiting for scan...
-                    </div>
-                    <button
-                      onClick={() => { clearPoll(); handleConnectQR() }}
-                      className="mt-3 text-sm text-purple-600 hover:text-purple-700 inline-flex items-center gap-1.5"
-                    >
-                      <RefreshCw size={14} /> Refresh QR
-                    </button>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {tab === 'pairing' && (
-              <div className="p-6">
-                {!pairingCode ? (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1.5">Phone Number</label>
-                    <input
-                      type="text"
-                      value={phoneNumber}
-                      onChange={e => setPhoneNumber(e.target.value)}
-                      placeholder="5511999999999"
-                      className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 mb-1"
-                    />
-                    <p className="text-xs text-gray-400 mb-4">Include country code without + or spaces</p>
-                    <button
-                      onClick={handlePairing}
-                      disabled={loading || !phoneNumber.trim()}
-                      className="w-full py-2.5 bg-gradient-to-r from-purple-600 to-indigo-500 text-white text-sm font-semibold rounded-xl hover:shadow-lg disabled:opacity-50 flex items-center justify-center gap-2"
-                    >
-                      {loading ? <Loader2 size={16} className="animate-spin" /> : <Smartphone size={16} />}
-                      {loading ? 'Connecting...' : 'Get Pairing Code'}
-                    </button>
-                  </div>
-                ) : (
-                  <div className="text-center py-4">
-                    <p className="text-sm text-gray-600 mb-3">Enter this code in your WhatsApp app</p>
-                    <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 mb-4">
-                      <span className="text-3xl font-mono font-bold tracking-widest text-gray-900 select-all">{pairingCode}</span>
-                    </div>
-                    <p className="text-xs text-gray-400">Open WhatsApp &gt; Linked Devices &gt; Link a Device &gt; Pair with code</p>
-                    <div className="mt-4 flex items-center justify-center gap-2 text-sm text-amber-600">
-                      <Loader2 size={14} className="animate-spin" />
-                      Waiting for pairing...
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-
-          <div className="bg-white rounded-2xl border border-gray-200 p-4">
-            <p className="text-xs text-gray-400">
-              Instance ID: <span className="font-mono text-gray-600">{instanceId}</span>
-            </p>
-          </div>
+          )}
         </>
       )}
-
-      {step === 'success' && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-8 text-center">
-          <div className="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Check size={28} className="text-green-600" />
-          </div>
-          <h2 className="text-lg font-bold text-gray-900 mb-2">Connected!</h2>
-          <p className="text-sm text-gray-600 mb-6">Your WhatsApp instance is now active and ready to use.</p>
-          <button
-            onClick={() => router.push(`/dashboard/whatsapp/${instanceId}`)}
-            className="py-2.5 px-8 bg-gradient-to-r from-purple-600 to-indigo-500 text-white text-sm font-semibold rounded-xl hover:shadow-lg inline-flex items-center gap-2"
-          >
-            Go to Instance
-          </button>
-        </div>
-      )}
-    </div>
+    </>
   )
 }

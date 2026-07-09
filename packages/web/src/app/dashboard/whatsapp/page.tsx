@@ -73,7 +73,7 @@ export default function WhatsAppPage() {
             return (
               <Link
                 key={inst.id}
-                href={`/dashboard/whatsapp/${inst.id}`}
+                href={`/dashboard/whatsapp/view?id=${inst.id}`}
                 className="bg-white rounded-2xl border border-gray-200 p-5 hover:shadow-md hover:border-purple-200 transition-all group"
               >
                 <div className="flex items-center justify-between">

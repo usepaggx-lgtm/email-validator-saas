@@ -14,7 +14,7 @@ database_id = "1c9c723c-fdb7-4420-acd8-00f806b7593e"
 [vars]
 SMTP_VERIFIER = "https://email-smtp-verifier.onrender.com"
 CRAWLER_URL = "https://email-crawler-s0c3.onrender.com"
-BASE_URL = "https://email-validator-1ge.pages.dev"
+BASE_URL = "https://email-validator-web.pages.dev"
 WHATSAPP_SERVICE_URL = "https://email-validator-whatsapp.onrender.com"
 WHATSAPP_API_KEY = "prod-wh-api-key-2024"
 
