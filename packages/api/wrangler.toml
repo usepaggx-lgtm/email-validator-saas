@@ -1,0 +1,20 @@
+name = "email-validator-api"
+main = "src/index.ts"
+compatibility_date = "2024-09-01"
+
+[[kv_namespaces]]
+binding = "EV_KV"
+id = "4247522549af483ba242cb3e07cd452c"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "email-validator-db"
+database_id = "1c9c723c-fdb7-4420-acd8-00f806b7593e"
+
+[vars]
+SMTP_VERIFIER = "https://email-smtp-verifier.onrender.com"
+CRAWLER_URL = "https://email-crawler-s0c3.onrender.com"
+BASE_URL = "https://email-validator-1ge.pages.dev"
+
+[env.production]
+name = "email-validator-api-prod"

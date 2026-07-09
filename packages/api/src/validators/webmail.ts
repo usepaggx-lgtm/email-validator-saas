@@ -1,0 +1,52 @@
+const WEBMAIL_DOMAINS: Record<string, string> = {
+  'gmail.com': 'Gmail',
+  'googlemail.com': 'Gmail',
+  'yahoo.com': 'Yahoo',
+  'yahoo.com.br': 'Yahoo',
+  'yahoo.co.uk': 'Yahoo',
+  'yahoo.fr': 'Yahoo',
+  'yahoo.de': 'Yahoo',
+  'yahoo.in': 'Yahoo',
+  'ymail.com': 'Yahoo',
+  'rocketmail.com': 'Yahoo',
+  'outlook.com': 'Outlook',
+  'hotmail.com': 'Hotmail',
+  'hotmail.com.br': 'Hotmail',
+  'live.com': 'Microsoft',
+  'live.com.au': 'Microsoft',
+  'live.co.uk': 'Microsoft',
+  'msn.com': 'Microsoft',
+  'icloud.com': 'iCloud',
+  'me.com': 'iCloud',
+  'mac.com': 'iCloud',
+  'aol.com': 'AOL',
+  'aol.co.uk': 'AOL',
+  'mail.com': 'Mail.com',
+  'email.com': 'Mail.com',
+  'protonmail.com': 'ProtonMail',
+  'proton.me': 'ProtonMail',
+  'pm.me': 'ProtonMail',
+  'zoho.com': 'Zoho',
+  'yandex.com': 'Yandex',
+  'yandex.ru': 'Yandex',
+  'gmx.com': 'GMX',
+  'gmx.de': 'GMX',
+  'gmx.net': 'GMX',
+  'fastmail.com': 'Fastmail',
+  'fastmail.fm': 'Fastmail',
+  'tutanota.com': 'Tutanota',
+  'tutanota.de': 'Tutanota',
+  'outlook.com.br': 'Outlook',
+  'bol.com.br': 'UOL',
+  'uol.com.br': 'UOL',
+  'terra.com.br': 'Terra',
+  'ig.com.br': 'IG',
+  'globo.com': 'Globo',
+}
+
+export function detectWebmail(domain: string): { isWebmail: boolean; provider?: string } {
+  const lower = domain.toLowerCase()
+  const provider = WEBMAIL_DOMAINS[lower]
+  if (provider) return { isWebmail: true, provider }
+  return { isWebmail: false }
+}

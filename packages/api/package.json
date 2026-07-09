@@ -1,0 +1,19 @@
+{
+  "name": "@email-validator/api",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev src/index.ts",
+    "deploy": "wrangler deploy src/index.ts"
+  },
+  "dependencies": {
+    "hono": "^4.6.0",
+    "stripe": "^22.3.0",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.202409.0",
+    "typescript": "^5.5.0",
+    "wrangler": "^3.78.0"
+  }
+}
