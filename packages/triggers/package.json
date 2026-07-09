@@ -1,5 +1,5 @@
 {
-  "name": "@saas-base/triggers",
+  "name": "@email-validator/triggers",
   "version": "1.0.0",
   "private": true,
   "type": "module",
