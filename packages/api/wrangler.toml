@@ -16,7 +16,7 @@ SMTP_VERIFIER = "https://email-smtp-verifier.onrender.com"
 CRAWLER_URL = "https://email-crawler-s0c3.onrender.com"
 BASE_URL = "https://email-validator-web.pages.dev"
 WHATSAPP_SERVICE_URL = "https://email-validator-whatsapp.onrender.com"
-WHATSAPP_API_KEY = "prod-wh-api-key-2024"
+WHATSAPP_API_KEY = "dev-key"
 
 [env.production]
 name = "email-validator-api"
