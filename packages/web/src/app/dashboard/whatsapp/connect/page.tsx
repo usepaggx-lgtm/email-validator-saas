@@ -29,7 +29,7 @@ export default function ConnectPage() {
     try {
       const res = await authFetch('/api/whatsapp/instance/create', { method: 'POST', body: JSON.stringify({ name: instanceName.trim() }) })
       if (res.error) { setError(res.error); return }
-      setInstanceId(res.id)
+      setInstanceId(res.instance?.id || '')
       setStep('connect')
     } catch { setError('Failed to create instance') }
     finally { setCreating(false) }
