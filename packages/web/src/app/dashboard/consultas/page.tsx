@@ -50,7 +50,7 @@ export default function ConsultasPage() {
 
   useEffect(() => {
     if (selectedGroup && groups[selectedGroup]?.results?.length > 0) {
-      setSelectedDataset(groups[selectedGroup].results[0].dataset || '')
+      setSelectedDataset(groups[selectedGroup].results[0].dataset_key || '')
     }
   }, [selectedGroup, groups])
 
@@ -171,7 +171,7 @@ export default function ConsultasPage() {
                     <div className="border-t border-gray-100 px-3 py-2 space-y-1.5 bg-gray-50/50">
                       {datasets.map((ds: any, i: number) => (
                         <div key={i} className="flex items-center justify-between text-xs py-1.5">
-                          <span className="text-gray-700">{getDatasetLabel(ds.dataset || ds.name)}</span>
+                          <span className="text-gray-700">{ds.dataset_name || getDatasetLabel(ds.dataset_key)}</span>
                           <span className="font-medium text-purple-600">{formatBRL(ds.cost_cents ?? ds.cost ?? 0)}</span>
                         </div>
                       ))}
@@ -215,7 +215,7 @@ export default function ConsultasPage() {
                     <select value={selectedDataset} onChange={e => setSelectedDataset(e.target.value)}
                       className="appearance-none w-full px-4 py-3 border border-gray-200 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 cursor-pointer">
                       {datasets.map((ds: any, i: number) => (
-                        <option key={i} value={ds.dataset || ds.name}>{getDatasetLabel(ds.dataset || ds.name)}</option>
+                        <option key={i} value={ds.dataset_key}>{ds.dataset_name || getDatasetLabel(ds.dataset_key)}</option>
                       ))}
                     </select>
                     <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
@@ -304,7 +304,7 @@ export default function ConsultasPage() {
                   <div className="min-w-0">
                     <p className="text-sm font-medium text-gray-900 truncate">{item.query || item.q}</p>
                     <p className="text-xs text-gray-400">
-                      {item.group || item.dataset && getDatasetLabel(item.dataset)}
+                      {item.dataset_name || item.dataset_key || item.dataset || ''}
                       {item.created_at && ` · ${new Date(item.created_at).toLocaleString()}`}
                     </p>
                   </div>

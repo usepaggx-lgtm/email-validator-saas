@@ -1,0 +1,338 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Consultas API",
+    "version": "1.0.0",
+    "description": "API de consulta a dados cadastrais, financeiros, judiciais e de compliance de pessoas e empresas brasileiras. Mais de 150 bases de dados organizadas em 9 grupos de API.\n\n## Grupos de API\n\n| Grupo | Descrição |\n|-------|-----------|\n| Pessoas | CPF, nome, dados cadastrais, contatos, risco, processos, compliance |\n| Empresas | CNPJ, QSA, financeiro, sócios, reputação |\n| Endereços | CEP, municípios, biomas, áreas de risco |\n| Veículos | Placa, Renavam, CHASSI |\n| Processos | CADE, processos administrativos |\n| Produtos | Ficha técnica, imagens, marketplaces |\n| On Demand | Certidões em tempo real (Receita, FGTS, TSE, IBAMA, etc.) |\n| Marketplace | Score de crédito, risco, telefone |\n| Modelagem | Dados estruturados para treinamento de ML |"
+  },
+  "servers": [
+    { "url": "https://email-validator-api.cristiano-developers4897.workers.dev", "description": "Produção" }
+  ],
+  "security": [{ "bearerAuth": [] }],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Token de autenticação obtido no login do sistema. Enviar no header `Authorization: Bearer {token}`."
+      }
+    },
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": { "type": "string", "description": "Mensagem de erro" },
+          "detail": { "type": "string", "description": "Detalhe do erro (quando aplicável)" }
+        }
+      },
+      "InsufficientCredits": {
+        "type": "object",
+        "properties": {
+          "error": { "type": "string", "example": "Saldo insuficiente" },
+          "required_cents": { "type": "integer", "description": "Valor necessário em centavos" },
+          "balance_cents": { "type": "integer", "description": "Saldo atual em centavos" }
+        }
+      },
+      "QueryRequest": {
+        "type": "object",
+        "required": ["q", "dataset"],
+        "properties": {
+          "q": {
+            "type": "string",
+            "description": "Query de consulta. Formatos: `doc{CPF}`, `doc{CNPJ}`, `name{NOME}`, `plate{PLACA}`, `cep{CEP}`",
+            "example": "doc{12345678909}"
+          },
+          "dataset": {
+            "type": "string",
+            "description": "Nome técnico do dataset. Consulte o endpoint de pricing para obter a lista completa.",
+            "example": "basic_data"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Máximo de resultados retornados (1-80)",
+            "default": 10,
+            "minimum": 1,
+            "maximum": 80
+          }
+        }
+      },
+      "QueryResponse": {
+        "type": "object",
+        "properties": {
+          "Result": {
+            "type": "array",
+            "description": "Array de resultados. Cada dataset retorna uma estrutura diferente.",
+            "items": { "type": "object" }
+          },
+          "QueryId": { "type": "string", "description": "Identificador único da consulta" },
+          "ElapsedMilliseconds": { "type": "integer", "description": "Tempo de resposta em ms" },
+          "Status": { "type": "string", "description": "Status da consulta (OK, ERROR, NO_DATA)" },
+          "_meta": {
+            "type": "object",
+            "properties": {
+              "balance_cents": { "type": "integer", "description": "Saldo restante em centavos" },
+              "cost_cents": { "type": "integer", "description": "Custo da consulta em centavos" },
+              "elapsed_ms": { "type": "integer", "description": "Tempo total em ms" }
+            }
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/api/bigdatacorp/pessoas": {
+      "post": {
+        "tags": ["Pessoas"],
+        "summary": "Consultar dados de pessoas",
+        "description": "Consulta dados de pessoas físicas utilizando CPF ou nome como chave de busca. Mais de 50 datasets disponíveis: dados básicos, contatos, compliance, risco, processos, profissionais e muito mais.",
+        "operationId": "consultarPessoas",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/QueryRequest" },
+              "example": {
+                "q": "doc{12345678909}",
+                "dataset": "basic_data",
+                "limit": 10
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Consulta realizada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/QueryResponse" }
+              }
+            }
+          },
+          "400": { "description": "Requisição inválida", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } },
+          "401": { "description": "Token ausente ou inválido" },
+          "402": { "description": "Saldo insuficiente", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/InsufficientCredits" } } } }
+        }
+      }
+    },
+    "/api/bigdatacorp/empresas": {
+      "post": {
+        "tags": ["Empresas"],
+        "summary": "Consultar dados de empresas",
+        "description": "Consulta dados de empresas utilizando CNPJ como chave de busca. Mais de 40 datasets disponíveis: dados básicos, contatos, compliance, sócios, reputação, processos e muito mais.",
+        "operationId": "consultarEmpresas",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/QueryRequest" },
+              "example": {
+                "q": "doc{11222333000181}",
+                "dataset": "basic_data",
+                "limit": 10
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Consulta realizada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/QueryResponse" }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "402": { "$ref": "#/components/responses/InsufficientCredits" }
+        }
+      }
+    },
+    "/api/bigdatacorp/enderecos": {
+      "post": {
+        "tags": ["Endereços"],
+        "summary": "Consultar dados de endereços",
+        "description": "Consulta dados de endereços, municípios, áreas de proteção ambiental, biomas, terras indígenas, estatísticas criminais e muito mais.",
+        "operationId": "consultarEnderecos",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/QueryRequest" },
+              "example": {
+                "q": "cep{01310100}",
+                "dataset": "municipalities",
+                "limit": 10
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Consulta realizada com sucesso", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/QueryResponse" } } } },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "402": { "$ref": "#/components/responses/InsufficientCredits" }
+        }
+      }
+    },
+    "/api/bigdatacorp/veiculos": {
+      "post": {
+        "tags": ["Veículos"],
+        "summary": "Consultar dados de veículos",
+        "description": "Consulta dados históricos de veículo pela placa.",
+        "operationId": "consultarVeiculos",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/QueryRequest" },
+              "example": {
+                "q": "plate{ABC1234}",
+                "dataset": "vehicle_plate_history",
+                "limit": 10
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Consulta realizada com sucesso", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/QueryResponse" } } } },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "402": { "$ref": "#/components/responses/InsufficientCredits" }
+        }
+      }
+    },
+    "/api/bigdatacorp/processos": {
+      "post": {
+        "tags": ["Processos"],
+        "summary": "Consultar processos",
+        "description": "Consulta processos administrativos e judiciais, incluindo processos do CADE.",
+        "operationId": "consultarProcessos",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/QueryRequest" },
+              "example": {
+                "q": "doc{12345678909}",
+                "dataset": "cade_proceedings",
+                "limit": 10
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Consulta realizada com sucesso", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/QueryResponse" } } } },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "402": { "$ref": "#/components/responses/InsufficientCredits" }
+        }
+      }
+    },
+    "/api/bigdatacorp/produtos": {
+      "post": {
+        "tags": ["Produtos"],
+        "summary": "Consultar dados de produtos",
+        "description": "Consulta fichas técnicas, imagens, avaliações e produtos relacionados.",
+        "operationId": "consultarProdutos",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/QueryRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Consulta realizada com sucesso", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/QueryResponse" } } } },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "402": { "$ref": "#/components/responses/InsufficientCredits" }
+        }
+      }
+    },
+    "/api/bigdatacorp/ondemand": {
+      "post": {
+        "tags": ["On Demand"],
+        "summary": "Consultas em tempo real (certidões)",
+        "description": "Consultas a bases oficiais em tempo real: Receita Federal, FGTS, TSE, IBAMA, Polícia Federal, SINTEGRA e muito mais. Retorna certidões e status atualizados no momento da consulta.",
+        "operationId": "consultarOnDemand",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/QueryRequest" },
+              "example": {
+                "q": "doc{12345678909}",
+                "dataset": "cpf_status",
+                "limit": 10
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Consulta realizada com sucesso", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/QueryResponse" } } } },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "402": { "$ref": "#/components/responses/InsufficientCredits" }
+        }
+      }
+    },
+    "/api/bigdatacorp/marketplace": {
+      "post": {
+        "tags": ["Marketplace"],
+        "summary": "Consultar marketplace de dados",
+        "description": "Acesso a dados de credit score, risco, validação de telefone, UBO (beneficiários finais) e outros datasets de parceiros.",
+        "operationId": "consultarMarketplace",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/QueryRequest" },
+              "example": {
+                "q": "doc{12345678909}",
+                "dataset": "cpf_status",
+                "limit": 10
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Consulta realizada com sucesso", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/QueryResponse" } } } },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "402": { "$ref": "#/components/responses/InsufficientCredits" }
+        }
+      }
+    },
+    "/api/bigdatacorp/modelagem": {
+      "post": {
+        "tags": ["Modelagem"],
+        "summary": "Dados para modelagem (ML)",
+        "description": "Dados estruturados e unificados para treinamento de modelos de machine learning, com centenas de variáveis consolidadas.",
+        "operationId": "consultarModelagem",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/QueryRequest" },
+              "example": {
+                "q": "doc{12345678909}",
+                "dataset": "unified_modeling_x1_0_person",
+                "limit": 10
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Consulta realizada com sucesso", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/QueryResponse" } } } },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "402": { "$ref": "#/components/responses/InsufficientCredits" }
+        }
+      }
+    }
+  }
+}
