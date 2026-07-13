@@ -27,7 +27,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { label: 'History', icon: Activity, href: '/dashboard/history', key: 'history' },
     { label: 'API Keys', icon: Key, href: '/dashboard/api-keys', key: 'api-keys' },
     { label: 'Billing', icon: CreditCard, href: '/dashboard/billing', key: 'billing' },
-    { label: 'Créditos', icon: Coins, href: '/dashboard/credits', key: 'credits' },
+    { label: 'Carteira', icon: Coins, href: '/dashboard/credits', key: 'credits' },
   ])
   const avatarRef = useRef<HTMLDivElement>(null)
 

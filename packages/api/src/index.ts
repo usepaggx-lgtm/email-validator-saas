@@ -1756,7 +1756,7 @@ app.get('/api/credits/balance', async (c) => {
   const user = await getUserFromToken(c)
   if (!user) return c.json({ error: 'Unauthorized' }, 401)
   const balance = await getCredits(user.id, c.env.DB)
-  return c.json({ balance })
+  return c.json({ balance_cents: balance, balance_brl: (balance / 100).toFixed(2) })
 })
 
 app.get('/api/credits/transactions', async (c) => {
@@ -1817,7 +1817,7 @@ app.get('/api/bigdatacorp/pricing', async (c) => {
   const groups = await c.env.DB.prepare('SELECT DISTINCT api_group FROM product_pricing WHERE product = \'consultas\' AND is_active = 1 ORDER BY api_group').all()
   const result: any = {}
   for (const g of (groups.results || [])) {
-    result[g.api_group] = await c.env.DB.prepare('SELECT dataset_key, dataset_name, credit_cost FROM product_pricing WHERE product = \'consultas\' AND api_group = ? AND is_active = 1 ORDER BY dataset_name').bind(g.api_group).all()
+    result[g.api_group] = await c.env.DB.prepare('SELECT dataset_key, dataset_name, credit_cost as cost_cents, base_price FROM product_pricing WHERE product = \'consultas\' AND api_group = ? AND is_active = 1 ORDER BY dataset_name').bind(g.api_group).all()
   }
   return c.json({ groups: result })
 })
@@ -1843,7 +1843,7 @@ app.post('/api/bigdatacorp/:group', async (c) => {
 
   const creditCost = pricing.credit_cost
   const balance = await getCredits(user.id, c.env.DB)
-  if (balance < creditCost) return c.json({ error: 'Insufficient credits', required: creditCost, balance }, 402)
+  if (balance < creditCost) return c.json({ error: 'Saldo insuficiente', required_cents: creditCost, balance_cents: balance }, 402)
 
   const accessToken = await c.env.EV_KV.get('cred:bdc_access_token')
   const tokenId = await c.env.EV_KV.get('cred:bdc_token_id')
@@ -1865,7 +1865,7 @@ app.post('/api/bigdatacorp/:group', async (c) => {
     await deductCredits(user.id, creditCost, c.env.DB, `Consulta ${dataset} (${group})`, 'bigdatacorp', bdcQueryId)
     await c.env.DB.prepare('INSERT INTO consultas_queries (user_id, api_group, dataset, query_text, credit_cost, response_status, bigdatacorp_query_id, elapsed_ms, response_preview) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)').bind(user.id, group, dataset, q, creditCost, status, bdcQueryId, elapsed, JSON.stringify(data).slice(0, 500)).run()
 
-    return c.json({ ...data, _meta: { balance: await getCredits(user.id, c.env.DB), credit_cost: creditCost, elapsed_ms: elapsed } })
+    return c.json({ ...data, _meta: { balance_cents: await getCredits(user.id, c.env.DB), cost_cents: creditCost, elapsed_ms: elapsed } })
   } catch (e: any) {
     await c.env.DB.prepare('INSERT INTO consultas_queries (user_id, api_group, dataset, query_text, credit_cost, response_status, elapsed_ms) VALUES (?, ?, ?, ?, ?, ?, ?)').bind(user.id, group, dataset, q, creditCost, 'error', Date.now() - start).run()
     return c.json({ error: 'BigDataCorp request failed', detail: e.message }, 502)
@@ -1878,7 +1878,7 @@ app.get('/api/consultas/history', async (c) => {
   const page = parseInt(c.req.query('page') || '1')
   const limit = 20
   const offset = (page - 1) * limit
-  const rows = await c.env.DB.prepare('SELECT * FROM consultas_queries WHERE user_id = ? ORDER BY created_at DESC LIMIT ? OFFSET ?').bind(user.id, limit, offset).all()
+  const rows = await c.env.DB.prepare('SELECT id, api_group, dataset, query_text, credit_cost as cost_cents, response_status, bigdatacorp_query_id, elapsed_ms, created_at FROM consultas_queries WHERE user_id = ? ORDER BY created_at DESC LIMIT ? OFFSET ?').bind(user.id, limit, offset).all()
   const total = await c.env.DB.prepare('SELECT COUNT(*) as c FROM consultas_queries WHERE user_id = ?').bind(user.id).first() as any
   return c.json({ history: rows.results, total: total?.c || 0, page, limit })
 })
@@ -1905,7 +1905,7 @@ app.get('/api/admin/bigdatacorp/pricing', async (c) => {
   const admin = await getUserFromToken(c)
   if (!admin || !admin.is_admin) return c.json({ error: 'Forbidden' }, 403)
   const group = c.req.query('group') || ''
-  const q = group ? `SELECT * FROM product_pricing WHERE product = 'consultas' AND api_group = ? ORDER BY dataset_name` : `SELECT * FROM product_pricing WHERE product = 'consultas' ORDER BY api_group, dataset_name`
+  const q = group ? `SELECT id, product, api_group, dataset_key, dataset_name, base_price, credit_cost as cost_cents, is_active FROM product_pricing WHERE product = 'consultas' AND api_group = ? ORDER BY dataset_name` : `SELECT id, product, api_group, dataset_key, dataset_name, base_price, credit_cost as cost_cents, is_active FROM product_pricing WHERE product = 'consultas' ORDER BY api_group, dataset_name`
   const rows = group ? await c.env.DB.prepare(q).bind(group).all() : await c.env.DB.prepare(q).all()
   return c.json({ pricing: rows.results })
 })
@@ -1914,11 +1914,12 @@ app.put('/api/admin/bigdatacorp/pricing/:id', async (c) => {
   const admin = await getUserFromToken(c)
   if (!admin || !admin.is_admin) return c.json({ error: 'Forbidden' }, 403)
   const id = c.req.param('id')
-  const { credit_cost, is_active } = await c.req.json() as any
-  if (credit_cost !== undefined && (credit_cost < 1 || credit_cost > 100000)) return c.json({ error: 'Invalid credit cost' }, 400)
+  let { cost_cents, credit_cost, is_active } = await c.req.json() as any
+  if (cost_cents === undefined) cost_cents = credit_cost
+  if (cost_cents !== undefined && (cost_cents < 1 || cost_cents > 100000)) return c.json({ error: 'Invalid cost' }, 400)
   const updates: string[] = []
   const vals: any[] = []
-  if (credit_cost !== undefined) { updates.push('credit_cost = ?'); vals.push(credit_cost) }
+  if (cost_cents !== undefined) { updates.push('credit_cost = ?'); vals.push(cost_cents) }
   if (is_active !== undefined) { updates.push('is_active = ?'); vals.push(is_active ? 1 : 0) }
   if (updates.length === 0) return c.json({ error: 'Nothing to update' }, 400)
   updates.push("updated_at = datetime('now')")

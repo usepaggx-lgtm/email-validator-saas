@@ -5,7 +5,7 @@ import { Database, Search, Edit3, Save, Loader2, Check, X, Filter } from 'lucide
 import { authFetch } from '@/lib/utils'
 
 const GROUPS = [
-  { value: '', label: 'All Groups' },
+  { value: '', label: 'Todos os Grupos' },
   { value: 'pessoas', label: 'Pessoas' },
   { value: 'empresas', label: 'Empresas' },
   { value: 'produtos', label: 'Produtos' },
@@ -39,7 +39,7 @@ export default function AdminConsultasPage() {
 
   function startEdit(d: any) {
     setEditingId(d.id)
-    setEditValue(String(d.credit_cost ?? 0))
+    setEditValue(((d.cost_cents ?? 0) / 100).toFixed(2))
     setFeedback(null)
   }
 
@@ -52,17 +52,18 @@ export default function AdminConsultasPage() {
   async function handleSave(id: string) {
     setSavingId(id)
     setFeedback(null)
+    const costCents = Math.round(parseFloat(editValue || '0') * 100)
     try {
       const res = await authFetch(`/api/admin/bigdatacorp/pricing/${id}`, {
         method: 'PUT',
-        body: JSON.stringify({ credit_cost: parseInt(editValue) || 0 }),
+        body: JSON.stringify({ cost_cents: costCents }),
       })
       if (res.error) {
         setFeedback({ id, ok: false })
       } else {
         setFeedback({ id, ok: true })
         setDatasets(prev =>
-          prev.map(d => (d.id === id ? { ...d, credit_cost: parseInt(editValue) || 0 } : d))
+          prev.map(d => (d.id === id ? { ...d, cost_cents: costCents } : d))
         )
         setEditingId(null)
       }
@@ -79,7 +80,7 @@ export default function AdminConsultasPage() {
           <h1 className="text-lg font-semibold bg-gradient-to-r from-purple-600 to-indigo-500 bg-clip-text text-transparent">
             Consultas - Pricing
           </h1>
-          <p className="text-sm text-gray-500">Manage BigDataCorp dataset pricing and credit costs.</p>
+          <p className="text-sm text-gray-500">Gerencie os preços dos datasets BigDataCorp.</p>
         </div>
         <div className="relative">
           <Filter size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -103,17 +104,17 @@ export default function AdminConsultasPage() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="bg-gray-50 text-left">
-                  <th className="px-4 py-3 font-medium text-gray-500">Dataset Name</th>
-                  <th className="px-4 py-3 font-medium text-gray-500">API Group</th>
-                  <th className="px-4 py-3 font-medium text-gray-500">Base Price (R$)</th>
-                  <th className="px-4 py-3 font-medium text-gray-500">Credit Cost</th>
-                  <th className="px-4 py-3 font-medium text-gray-500">Active</th>
-                  <th className="px-4 py-3 font-medium text-gray-500">Actions</th>
+                  <th className="px-4 py-3 font-medium text-gray-500">Consulta</th>
+                  <th className="px-4 py-3 font-medium text-gray-500">Grupo</th>
+                  <th className="px-4 py-3 font-medium text-gray-500">Preço Base (R$)</th>
+                  <th className="px-4 py-3 font-medium text-gray-500">Custo (R$)</th>
+                  <th className="px-4 py-3 font-medium text-gray-500">Ativo</th>
+                  <th className="px-4 py-3 font-medium text-gray-500">Ações</th>
                 </tr>
               </thead>
               <tbody>
                 {datasets.length === 0 ? (
-                  <tr><td colSpan={6} className="px-4 py-10 text-center text-sm text-gray-400">No datasets found</td></tr>
+                  <tr><td colSpan={6} className="px-4 py-10 text-center text-sm text-gray-400">Nenhuma consulta encontrada</td></tr>
                 ) : (
                   datasets.map((d: any) => (
                     <tr key={d.id} className="border-t border-gray-100 hover:bg-gray-50">
@@ -123,37 +124,38 @@ export default function AdminConsultasPage() {
                           {d.group}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-xs text-gray-600">R$ {d.base_price?.toFixed(2) ?? '0.00'}</td>
+                      <td className="px-4 py-3 text-xs text-gray-600">R$ {(d.base_price ?? 0).toFixed(2)}</td>
                       <td className="px-4 py-3">
                         {editingId === d.id ? (
                           <input
                             type="number"
+                            step="0.01"
                             value={editValue}
                             onChange={e => setEditValue(e.target.value)}
                             className="w-24 px-2 py-1.5 border border-purple-300 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-purple-500/20"
                             autoFocus
                           />
                         ) : (
-                          <span className="text-xs text-gray-700">{d.credit_cost ?? 0}</span>
+                          <span className="text-xs text-gray-700">R$ {((d.cost_cents ?? 0) / 100).toFixed(2)}</span>
                         )}
                       </td>
                       <td className="px-4 py-3">
                         {d.active ? (
                           <span className="inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full bg-green-50 text-green-700">
-                            <Check size={10} /> Yes
+                            <Check size={10} /> Sim
                           </span>
                         ) : (
                           <span className="inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full bg-red-50 text-red-500">
-                            <X size={10} /> No
+                            <X size={10} /> Não
                           </span>
                         )}
                       </td>
                       <td className="px-4 py-3">
                         {feedback && feedback.id === d.id ? (
                           feedback.ok ? (
-                            <span className="inline-flex items-center gap-1 text-xs text-green-600"><Check size={14} /> Saved</span>
+                            <span className="inline-flex items-center gap-1 text-xs text-green-600"><Check size={14} /> Salvo</span>
                           ) : (
-                            <span className="inline-flex items-center gap-1 text-xs text-red-500"><X size={14} /> Error</span>
+                            <span className="inline-flex items-center gap-1 text-xs text-red-500"><X size={14} /> Erro</span>
                           )
                         ) : editingId === d.id ? (
                           <div className="flex gap-1">

@@ -17,7 +17,7 @@ const GROUP_ICONS: Record<string, any> = {
 
 export default function ConsultasPage() {
   const router = useRouter()
-  const [balance, setBalance] = useState<number | null>(null)
+  const [balanceCents, setBalanceCents] = useState<number | null>(null)
   const [groups, setGroups] = useState<Record<string, any>>({})
   const [expandedGroup, setExpandedGroup] = useState<string | null>(null)
   const [selectedGroup, setSelectedGroup] = useState('')
@@ -34,7 +34,7 @@ export default function ConsultasPage() {
   useEffect(() => {
     if (!getUser()) { router.push('/login'); return }
     Promise.all([
-      authFetch('/api/credits/balance').then(d => setBalance(d.balance ?? 0)).catch(() => {}),
+      authFetch('/api/credits/balance').then(d => setBalanceCents(d.balance_cents ?? 0)).catch(() => {}),
       authFetch('/api/bigdatacorp/pricing').then(d => {
         if (d.groups) {
           setGroups(d.groups)
@@ -77,10 +77,10 @@ export default function ConsultasPage() {
       })
       if (d.error) { setError(d.error); return }
       setResult({ ...d, _elapsed: Date.now() - startTime })
-      if (d._meta?.balance !== undefined) setBalance(d._meta.balance)
+      if (d._meta?.balance_cents !== undefined) setBalanceCents(d._meta.balance_cents)
       fetchHistory(1)
     } catch {
-      setError('Connection failed')
+      setError('Falha na conexão')
     }
     setLoading(false)
   }
@@ -94,6 +94,10 @@ export default function ConsultasPage() {
     return datasetKey
       .replace(/_/g, ' ')
       .replace(/\b\w/g, (c) => c.toUpperCase())
+  }
+
+  function formatBRL(cents: number): string {
+    return `R$ ${(cents / 100).toFixed(2)}`
   }
 
   if (pageLoading) return <div className="flex items-center justify-center py-20"><Loader2 size={24} className="animate-spin text-blue-600" /></div>
@@ -121,15 +125,15 @@ export default function ConsultasPage() {
               <DollarSign size={20} className="text-purple-600" />
             </div>
             <div>
-              <p className="text-xs text-gray-500 font-medium">Available Balance</p>
+              <p className="text-xs text-gray-500 font-medium">Saldo Disponível</p>
               <p className="text-2xl font-bold text-gray-900">
-                {balance !== null ? `R$ ${(balance / 100).toFixed(2)}` : '—'}
+                {balanceCents !== null ? formatBRL(balanceCents) : '—'}
               </p>
             </div>
           </div>
           <a href="/dashboard/credits" className="px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-500 text-white text-sm font-semibold rounded-xl hover:shadow-lg transition-all flex items-center gap-2">
             <CreditCard size={15} />
-            Buy Credits
+            Adicionar Saldo
           </a>
         </div>
       </div>
@@ -137,10 +141,10 @@ export default function ConsultasPage() {
       <div className="grid lg:grid-cols-3 gap-6 mb-6">
         <div className="lg:col-span-1 space-y-3">
           <h2 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
-            <Layers size={16} className="text-purple-500" /> API Groups
+            <Layers size={16} className="text-purple-500" /> Grupos de API
           </h2>
           {Object.keys(groups).length === 0 ? (
-            <p className="text-sm text-gray-400 text-center py-6">No groups available</p>
+            <p className="text-sm text-gray-400 text-center py-6">Nenhum grupo disponível</p>
           ) : (
             Object.entries(groups).map(([key, group]) => {
               const datasets = group.results || []
@@ -168,7 +172,7 @@ export default function ConsultasPage() {
                       {datasets.map((ds: any, i: number) => (
                         <div key={i} className="flex items-center justify-between text-xs py-1.5">
                           <span className="text-gray-700">{getDatasetLabel(ds.dataset || ds.name)}</span>
-                          <span className="font-medium text-purple-600">{ds.credit_cost ?? ds.cost ?? 0} credits</span>
+                          <span className="font-medium text-purple-600">{formatBRL(ds.cost_cents ?? ds.cost ?? 0)}</span>
                         </div>
                       ))}
                     </div>
@@ -182,18 +186,18 @@ export default function ConsultasPage() {
         <div className="lg:col-span-2 space-y-6">
           <div className="bg-white rounded-2xl border border-gray-200 p-5">
             <h2 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
-              <Search size={16} className="text-purple-500" /> New Query
+              <Search size={16} className="text-purple-500" /> Nova Consulta
             </h2>
             <form onSubmit={handleSearch} className="space-y-4">
               <div>
-                <label className="text-xs font-medium text-gray-500 mb-1.5 block">Query (CPF, CNPJ, name, etc.)</label>
-                <input type="text" value={query} onChange={e => setQuery(e.target.value)} placeholder="Type your search query..."
+                <label className="text-xs font-medium text-gray-500 mb-1.5 block">Consulta (CPF, CNPJ, nome, etc.)</label>
+                <input type="text" value={query} onChange={e => setQuery(e.target.value)} placeholder="Digite sua consulta..."
                   className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500" />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs font-medium text-gray-500 mb-1.5 block">Group</label>
+                  <label className="text-xs font-medium text-gray-500 mb-1.5 block">Grupo</label>
                   <div className="relative">
                     <select value={selectedGroup} onChange={e => setSelectedGroup(e.target.value)}
                       className="appearance-none w-full px-4 py-3 border border-gray-200 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 cursor-pointer">
@@ -206,7 +210,7 @@ export default function ConsultasPage() {
                 </div>
 
                 <div>
-                  <label className="text-xs font-medium text-gray-500 mb-1.5 block">Dataset</label>
+                  <label className="text-xs font-medium text-gray-500 mb-1.5 block">Base de Dados</label>
                   <div className="relative">
                     <select value={selectedDataset} onChange={e => setSelectedDataset(e.target.value)}
                       className="appearance-none w-full px-4 py-3 border border-gray-200 rounded-xl text-sm bg-white focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 cursor-pointer">
@@ -222,7 +226,7 @@ export default function ConsultasPage() {
               <button type="submit" disabled={loading || !query.trim() || !selectedGroup || !selectedDataset}
                 className="w-full py-3 bg-gradient-to-r from-purple-600 to-indigo-500 text-white text-sm font-semibold rounded-xl hover:shadow-lg transition-all disabled:opacity-50 flex items-center justify-center gap-2">
                 {loading ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} />}
-                {loading ? 'Querying...' : 'Search'}
+                {loading ? 'Consultando...' : 'Consultar'}
               </button>
             </form>
           </div>
@@ -238,13 +242,13 @@ export default function ConsultasPage() {
             <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
               <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
                 <h3 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
-                  <FileText size={16} className="text-purple-500" /> Result
+                  <FileText size={16} className="text-purple-500" /> Resultado
                 </h3>
                 <div className="flex items-center gap-3 text-xs">
                   {result._meta && (
                     <>
                       <span className="flex items-center gap-1 text-purple-600 font-medium">
-                        <DollarSign size={12} /> {result._meta.credit_cost ?? 0} credits
+                        <DollarSign size={12} /> {formatBRL(result._meta.cost_cents ?? 0)}
                       </span>
                       <span className="flex items-center gap-1 text-gray-500">
                         <Clock size={12} /> {result._elapsed ?? result._meta?.elapsed_ms ?? 0}ms
@@ -252,7 +256,7 @@ export default function ConsultasPage() {
                     </>
                   )}
                   <span className="flex items-center gap-1 text-green-600 font-medium">
-                    <CheckCircle size={12} /> Success
+                    <CheckCircle size={12} /> Sucesso
                   </span>
                 </div>
               </div>
@@ -267,19 +271,19 @@ export default function ConsultasPage() {
       <div className="bg-white rounded-2xl border border-gray-200 p-5">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
-            <Clock size={16} className="text-purple-500" /> Recent Queries
+            <Clock size={16} className="text-purple-500" /> Consultas Recentes
           </h2>
           {history.length > 0 && (
             <div className="flex items-center gap-1">
               <button onClick={() => { const p = Math.max(1, historyPage - 1); setHistoryPage(p); fetchHistory(p) }}
                 disabled={historyPage <= 1}
                 className="px-2.5 py-1.5 text-xs font-medium text-gray-600 bg-gray-50 rounded-lg hover:bg-gray-100 disabled:opacity-40 transition-colors">
-                Prev
+                Anterior
               </button>
               <span className="text-xs text-gray-400 px-2">{historyPage}</span>
               <button onClick={() => { const p = historyPage + 1; setHistoryPage(p); fetchHistory(p) }}
                 className="px-2.5 py-1.5 text-xs font-medium text-gray-600 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                Next
+                Próximo
               </button>
             </div>
           )}
@@ -288,7 +292,7 @@ export default function ConsultasPage() {
         {historyLoading ? (
           <div className="flex items-center justify-center py-8"><Loader2 size={18} className="animate-spin text-purple-500" /></div>
         ) : history.length === 0 ? (
-          <p className="text-sm text-gray-400 text-center py-8">No queries yet. Start searching above.</p>
+          <p className="text-sm text-gray-400 text-center py-8">Nenhuma consulta ainda. Faça sua primeira consulta acima.</p>
         ) : (
           <div className="space-y-2">
             {history.map((item: any, i: number) => (
@@ -306,8 +310,8 @@ export default function ConsultasPage() {
                   </div>
                 </div>
                 <div className="flex items-center gap-2 shrink-0 ml-3">
-                  {item.credit_cost != null && (
-                    <span className="text-xs font-medium text-purple-600">{item.credit_cost} credits</span>
+                  {item.cost_cents != null && (
+                    <span className="text-xs font-medium text-purple-600">{formatBRL(item.cost_cents)}</span>
                   )}
                 </div>
               </div>
