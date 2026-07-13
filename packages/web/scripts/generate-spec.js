@@ -39,256 +39,302 @@ const baseSpec = {
       }}
     }
   },
+  'x-tagGroups': [],
   tags: [],
   paths: {}
 }
 
-const groups = {
-  pessoas: { tag: 'Pessoas', description: 'Dados de pessoas físicas. Utiliza CPF como chave principal.' },
-  empresas: { tag: 'Empresas', description: 'Dados de empresas. Utiliza CNPJ como chave principal.' },
-  enderecos: { tag: 'Endereços', description: 'Dados de endereços, municípios e áreas de proteção ambiental.' },
-  veiculos: { tag: 'Veículos', description: 'Dados de veículos por placa.' },
-  processos: { tag: 'Processos', description: 'Processos administrativos.' },
-  produtos: { tag: 'Produtos', description: 'Dados de produtos.' },
-  ondemand: { tag: 'On Demand', description: 'Certidões em tempo real e consultas online.' },
-  marketplace: { tag: 'Marketplace', description: 'Score de crédito, risco, UBO e validação de telefone.' },
-  modelagem: { tag: 'Modelagem', description: 'Dados para treinamento de modelos de machine learning.' }
-}
-
-const datasets = [
-  // PESSOAS
-  { group: 'pessoas', key: 'basic_data', name: 'Dados Básicos', desc: 'Dados cadastrais consolidados: nome, CPF, data de nascimento, filiação, situação do CPF, sexo, nacionalidade, naturalidade.', query: 'doc{12345678909}' },
-  { group: 'pessoas', key: 'basic_data_recent', name: 'Dados Básicos com Recência Configurável', desc: 'Dados cadastrais filtrados por janela temporal configurável.', query: 'doc{12345678909}' },
-  { group: 'pessoas', key: 'basic_data_history', name: 'Histórico de Dados Básicos', desc: 'Alterações cadastrais ao longo do tempo com datas de observação.', query: 'doc{12345678909}' },
-  { group: 'pessoas', key: 'emails', name: 'E-mails', desc: 'E-mails associados à pessoa com status de validação, datas de referência e recorrência.', query: 'doc{12345678909}' },
-  { group: 'pessoas', key: 'related_emails', name: 'E-mails de Pessoas Relacionadas', desc: 'E-mails de familiares, sócios e co-residentes.', query: 'doc{12345678909}' },
-  { group: 'pessoas', key: 'phones', name: 'Telefones', desc: 'Telefones com tipo (fixo/móvel), status, operadora, estabilidade e recorrência.', query: 'doc{12345678909}' },
-  { group: 'pessoas', key: 'related_phones', name: 'Telefones de Pessoas Relacionadas', desc: 'Telefones de pessoas relacionadas.', query: 'doc{12345678909}' },
-  { group: 'pessoas', key: 'addresses', name: 'Endereços', desc: 'Endereços com tipo, completude, datas de referência e estabilidade.', query: 'doc{12345678909}' },
-  { group: 'pessoas', key: 'related_addresses', name: 'Endereços de Pessoas Relacionadas', desc: 'Endereços de pessoas relacionadas.', query: 'doc{12345678909}' },
-  { group: 'pessoas', key: 'registration_data', name: 'Dados de Registro', desc: 'Identificação + contatos consolidados para validação cadastral.', query: 'doc{12345678909}' },
-  { group: 'pessoas', key: 'kyc_compliance', name: 'KYC e Compliance', desc: 'Indicadores de PEP, listas restritivas, impedimentos públicos e score de risco regulatório.', query: 'doc{12345678909}' },
-  { group: 'pessoas', key: 'kyc_compliance_family', name: 'KYC e Compliance Familiar', desc: 'Dados de compliance de familiares de primeiro nível.', query: 'doc{12345678909}' },
-  { group: 'pessoas', key: 'gambling_compliance', name: 'Compliance de Apostas', desc: 'Participação societária em empresas de apostas online.', query: 'doc{12345678909}' },
-  { group: 'pessoas', key: 'online_presence', name: 'Presença Online', desc: 'Intensidade de presença digital em bandas A-H nos períodos de 30/90/180/365 dias.', query: 'doc{12345678909}' },
-  { group: 'pessoas', key: 'family_online_presence', name: 'Presença Online Familiar', desc: 'Atividade digital agregada do núcleo familiar.', query: 'doc{12345678909}' },
-  { group: 'pessoas', key: 'web_passages', name: 'Passagens pela Web', desc: 'Ocorrências na web associadas ao CPF, qualificadas como positivas, negativas ou neutras.', query: 'doc{12345678909}' },
-  { group: 'pessoas', key: 'online_betting_propensity', name: 'Propensão a Apostas Online', desc: 'Score de propensão a apostas online em banda A-H.', query: 'doc{12345678909}' },
-  { group: 'pessoas', key: 'digital_financial_behavior', name: 'Comportamento Financeiro Digital', desc: 'Classificação A-H de maturidade financeira digital.', query: 'doc{12345678909}' },
-  { group: 'pessoas', key: 'financial_info', name: 'Informações Financeiras', desc: 'Indicadores financeiros: renda estimada, situação empregatícia, vínculos previdenciários.', query: 'doc{12345678909}' },
-  { group: 'pessoas', key: 'family_financial_info', name: 'Informações Financeiras Familiares', desc: 'Indicadores financeiros do núcleo familiar.', query: 'doc{12345678909}' },
-  { group: 'pessoas', key: 'social_benefits', name: 'Benefícios Sociais', desc: 'Participação em programas de transferência de renda federais, estaduais e municipais.', query: 'doc{12345678909}' },
-  { group: 'pessoas', key: 'family_social_benefits', name: 'Benefícios Sociais Familiares', desc: 'Benefícios sociais de familiares.', query: 'doc{12345678909}' },
-  { group: 'pessoas', key: 'industrial_property', name: 'Propriedades Industriais', desc: 'Marcas e patentes registradas em bases oficiais.', query: 'doc{12345678909}' },
-  { group: 'pessoas', key: 'government_debtors', name: 'Devedores do Governo', desc: 'Registros de dívidas ativas com órgãos públicos.', query: 'doc{12345678909}' },
-  { group: 'pessoas', key: 'political_involvement_level', name: 'Nível de Envolvimento Político', desc: 'Indicador consolidado de envolvimento político: participação eleitoral, doações, cargos públicos.', query: 'doc{12345678909}' },
-  { group: 'pessoas', key: 'electoral_candidates', name: 'Candidatos Eleitorais', desc: 'Histórico de candidaturas: cargo, partido, coligação, ano, resultado.', query: 'doc{12345678909}' },
-  { group: 'pessoas', key: 'electoral_donations', name: 'Doações Eleitorais', desc: 'Doações eleitorais realizadas ou recebidas.', query: 'doc{12345678909}' },
-  { group: 'pessoas', key: 'family_political_history', name: 'Histórico Político Familiar', desc: 'Envolvimento político de membros da família.', query: 'doc{12345678909}' },
-  { group: 'pessoas', key: 'electoral_service_providers', name: 'Prestadores de Serviços Eleitorais', desc: 'Vínculos com campanhas, partidos ou estruturas políticas.', query: 'doc{12345678909}' },
-  { group: 'pessoas', key: 'popularity_data', name: 'Dados de Popularidade', desc: 'Indicador de influência pública consolidado: exposição política, judicial, econômica, midiática.', query: 'doc{12345678909}' },
-  { group: 'pessoas', key: 'media_exposure', name: 'Exposição na Mídia', desc: 'Frequência, visibilidade e sentimento em conteúdo jornalístico.', query: 'doc{12345678909}' },
-  { group: 'pessoas', key: 'online_ads', name: 'Anúncios Online', desc: 'Perfis de anunciante em portais e marketplaces.', query: 'doc{12345678909}' },
-  { group: 'pessoas', key: 'website_data', name: 'Dados de Sites', desc: 'Sites associados ao indivíduo: domínios, tecnologias.', query: 'doc{12345678909}' },
-  { group: 'pessoas', key: 'processes', name: 'Processos Judiciais', desc: 'Processos judiciais e administrativos: cível, trabalhista, criminal, administrativo.', query: 'doc{12345678909}' },
-  { group: 'pessoas', key: 'family_processes', name: 'Processos Judiciais Familiares', desc: 'Processos de familiares de primeiro grau.', query: 'doc{12345678909}' },
-  { group: 'pessoas', key: 'process_distribution', name: 'Distribuição de Processos', desc: 'Visão agregada de processos: distribuição por tipo, instância, status.', query: 'doc{12345678909}' },
-  { group: 'pessoas', key: 'family_process_distribution', name: 'Distribuição de Processos Familiares', desc: 'Indicadores agregados de processos de familiares.', query: 'doc{12345678909}' },
-  { group: 'pessoas', key: 'professional_data', name: 'Dados Profissionais', desc: 'Ocupação, cargos, áreas de atuação, empregadores.', query: 'doc{12345678909}' },
-  { group: 'pessoas', key: 'professional_turnover', name: 'Turnover Profissional', desc: 'Indicadores de mudanças profissionais: frequência, padrões temporais.', query: 'doc{12345678909}' },
-  { group: 'pessoas', key: 'academic_history', name: 'Histórico Acadêmico', desc: 'Cursos técnicos, graduação, pós-graduação, MBA. Instituição, período, status.', query: 'doc{12345678909}' },
-  { group: 'pessoas', key: 'awards_certifications', name: 'Prêmios e Certificações', desc: 'Reconhecimentos públicos e certificações profissionais.', query: 'doc{12345678909}' },
-  { group: 'pessoas', key: 'licenses_authorizations', name: 'Licenças e Autorizações', desc: 'Permissões profissionais: tipo, órgão emissor, validade.', query: 'doc{12345678909}' },
-  { group: 'pessoas', key: 'professional_councils', name: 'Conselhos de Classe', desc: 'Inscrição em conselhos profissionais (CRM, OAB, CREA, CRC).', query: 'doc{12345678909}' },
-  { group: 'pessoas', key: 'public_servants', name: 'Servidores Públicos', desc: 'Vínculos com administração pública: cargos, entidades, lotação.', query: 'doc{12345678909}' },
-  { group: 'pessoas', key: 'sports_exposure', name: 'Exposição Esportiva', desc: 'Participação esportiva: competições, rankings, clubes.', query: 'doc{12345678909}' },
-  { group: 'pessoas', key: 'financial_risk', name: 'Risco Financeiro', desc: 'Inadimplência, dívidas ativas, scores de risco e classificações.', query: 'doc{12345678909}' },
-  { group: 'pessoas', key: 'family_financial_risk', name: 'Risco Financeiro Familiar', desc: 'Risco financeiro de familiares de primeiro nível.', query: 'doc{12345678909}' },
-  { group: 'pessoas', key: 'collection_presence', name: 'Presença em Cobrança', desc: 'Ocorrências em processos de cobrança: recorrência, origens, períodos.', query: 'doc{12345678909}' },
-  { group: 'pessoas', key: 'default_probability', name: 'Probabilidade de Negativação', desc: 'Score preditivo de negativação futura.', query: 'doc{12345678909}' },
-  { group: 'pessoas', key: 'sociodemographic_info', name: 'Informações Sócio-Demográficas', desc: 'Perfil populacional da região: renda, escolaridade, composição familiar (IBGE).', query: 'doc{12345678909}' },
-  { group: 'pessoas', key: 'vehicles', name: 'Veículos Associados', desc: 'Veículos relacionados à pessoa por anúncios e bases públicas.', query: 'doc{12345678909}' },
-  // EMPRESAS
-  { group: 'empresas', key: 'company_basic_data', name: 'Dados Básicos', desc: 'Dados cadastrais consolidados: razão social, CNPJ, data de abertura, regime tributário, CNAE.', query: 'doc{11222333000181}' },
-  { group: 'empresas', key: 'company_basic_data_history', name: 'Histórico de Dados Básicos', desc: 'Alterações cadastrais ao longo do tempo.', query: 'doc{11222333000181}' },
-  { group: 'empresas', key: 'mcc_data', name: 'Categoria Comercial MCC', desc: 'Código MCC para classificação de serviços financeiros.', query: 'doc{11222333000181}' },
-  { group: 'empresas', key: 'company_registration_data', name: 'Dados de Registro', desc: 'Identificação + contatos consolidados.', query: 'doc{11222333000181}' },
-  { group: 'empresas', key: 'company_emails', name: 'E-mails', desc: 'E-mails associados à empresa.', query: 'doc{11222333000181}' },
-  { group: 'empresas', key: 'company_related_emails', name: 'E-mails de Relacionados', desc: 'E-mails de pessoas relacionadas à empresa.', query: 'doc{11222333000181}' },
-  { group: 'empresas', key: 'company_phones', name: 'Telefones', desc: 'Telefones da empresa.', query: 'doc{11222333000181}' },
-  { group: 'empresas', key: 'company_related_phones', name: 'Telefones de Relacionados', desc: 'Telefones de pessoas relacionadas.', query: 'doc{11222333000181}' },
-  { group: 'empresas', key: 'company_addresses', name: 'Endereços', desc: 'Endereços da empresa.', query: 'doc{11222333000181}' },
-  { group: 'empresas', key: 'company_related_addresses', name: 'Endereços de Relacionados', desc: 'Endereços de pessoas relacionadas.', query: 'doc{11222333000181}' },
-  { group: 'empresas', key: 'company_kyc_compliance', name: 'KYC e Compliance', desc: 'PEP, sanções, restrições nacionais e internacionais.', query: 'doc{11222333000181}' },
-  { group: 'empresas', key: 'partner_kyc_compliance', name: 'KYC dos Sócios', desc: 'KYC e compliance dos sócios.', query: 'doc{11222333000181}' },
-  { group: 'empresas', key: 'employee_kyc_compliance', name: 'KYC dos Funcionários', desc: 'KYC e compliance dos funcionários.', query: 'doc{11222333000181}' },
-  { group: 'empresas', key: 'economic_group_kyc_compliance', name: 'KYC do Grupo Econômico', desc: 'KYC de todo o grupo econômico.', query: 'doc{11222333000181}' },
-  { group: 'empresas', key: 'company_industrial_property', name: 'Propriedades Industriais', desc: 'Marcas e patentes da empresa.', query: 'doc{11222333000181}' },
-  { group: 'empresas', key: 'employee_industrial_property', name: 'Propriedades Industriais de Funcionários', desc: 'Propriedade intelectual de funcionários.', query: 'doc{11222333000181}' },
-  { group: 'empresas', key: 'partner_industrial_property', name: 'Propriedades Industriais de Sócios', desc: 'Propriedade intelectual de sócios.', query: 'doc{11222333000181}' },
-  { group: 'empresas', key: 'company_evolution', name: 'Evolução da Empresa', desc: 'Capital social, funcionários e sócios ao longo do tempo.', query: 'doc{11222333000181}' },
-  { group: 'empresas', key: 'activity_indicators', name: 'Indicadores de Atividade', desc: 'Faixa de receita, funcionários, presença digital.', query: 'doc{11222333000181}' },
-  { group: 'empresas', key: 'company_political_involvement', name: 'Envolvimento Político', desc: 'Score de participação política do quadro societário.', query: 'doc{11222333000181}' },
-  { group: 'empresas', key: 'company_electoral_donations', name: 'Doações Eleitorais', desc: 'Doações eleitorais da empresa.', query: 'doc{11222333000181}' },
-  { group: 'empresas', key: 'partner_electoral_donations', name: 'Doações Eleitorais de Sócios', desc: 'Doações eleitorais realizadas por sócios.', query: 'doc{11222333000181}' },
-  { group: 'empresas', key: 'union_agreements', name: 'Acordos Sindicais', desc: 'Convenções coletivas de trabalho.', query: 'doc{11222333000181}' },
-  { group: 'empresas', key: 'social_awareness', name: 'Consciência Social', desc: 'Acessibilidade, diversidade, gap salarial.', query: 'doc{11222333000181}' },
-  { group: 'empresas', key: 'company_media_exposure', name: 'Exposição na Mídia', desc: 'Presença em conteúdo jornalístico com análise de sentimento.', query: 'doc{11222333000181}' },
-  { group: 'empresas', key: 'shareholder_influence', name: 'Influência do Quadro Societário', desc: 'Nível de influência inferido do quadro de sócios.', query: 'doc{11222333000181}' },
-  { group: 'empresas', key: 'company_online_ads', name: 'Anúncios Online', desc: 'Perfis de anunciante em marketplaces.', query: 'doc{11222333000181}' },
-  { group: 'empresas', key: 'company_website_data', name: 'Dados de Sites', desc: 'Sites, domínios, tecnologias e certificados de segurança.', query: 'doc{11222333000181}' },
-  { group: 'empresas', key: 'marketplaces', name: 'Marketplaces', desc: 'Presença em e-commerce: indicadores agregados.', query: 'doc{11222333000181}' },
-  { group: 'empresas', key: 'company_processes', name: 'Processos Judiciais', desc: 'Processos judiciais e administrativos da empresa.', query: 'doc{11222333000181}' },
-  { group: 'empresas', key: 'partner_processes', name: 'Processos dos Sócios', desc: 'Processos judiciais dos sócios.', query: 'doc{11222333000181}' },
-  { group: 'empresas', key: 'company_process_distribution', name: 'Distribuição de Processos', desc: 'Dados agregados de processos da empresa.', query: 'doc{11222333000181}' },
-  { group: 'empresas', key: 'partner_process_distribution', name: 'Distribuição de Processos dos Sócios', desc: 'Dados agregados de processos dos sócios.', query: 'doc{11222333000181}' },
-  { group: 'empresas', key: 'company_relationships', name: 'Relacionamentos', desc: 'Entidades com vínculo com a empresa.', query: 'doc{11222333000181}' },
-  { group: 'empresas', key: 'economic_group_relationships', name: 'Relacionamentos do Grupo Econômico', desc: 'Entidades do mesmo grupo econômico.', query: 'doc{11222333000181}' },
-  { group: 'empresas', key: 'qsa_recent', name: 'QSA com Recência Configurável', desc: 'Estrutura societária em tempo real.', query: 'doc{11222333000181}' },
-  { group: 'empresas', key: 'reviews_reputation', name: 'Avaliações e Reputação', desc: 'Reputação em múltiplas plataformas.', query: 'doc{11222333000181}' },
-  { group: 'empresas', key: 'company_awards_certifications', name: 'Prêmios e Certificações', desc: 'Prêmios e certificações obtidas.', query: 'doc{11222333000181}' },
-  { group: 'empresas', key: 'company_collection_presence', name: 'Presença em Cobrança', desc: 'Passagem por processos de cobrança.', query: 'doc{11222333000181}' },
-  { group: 'empresas', key: 'company_government_debtors', name: 'Devedores do Governo', desc: 'Registro em dívida ativa da União e FGTS.', query: 'doc{11222333000181}' },
-  { group: 'empresas', key: 'investment_funds_data', name: 'Fundos de Investimento', desc: 'Empresas registradas na CVM: dados cadastrais e movimentações.', query: 'doc{11222333000181}' },
-  { group: 'empresas', key: 'civil_works_data', name: 'Obras Civis', desc: 'Obras civis registradas no CNO.', query: 'doc{11222333000181}' },
-  { group: 'empresas', key: 'financial_market_data', name: 'Mercado Financeiro', desc: 'Balanço patrimonial, estrutura acionária de empresas de capital aberto.', query: 'doc{11222333000181}' },
-  // ENDEREÇOS
-  { group: 'enderecos', key: 'company_statistics', name: 'Estatísticas de Empresas', desc: 'Perfil econômico da região.', query: 'cep{01310100}' },
-  { group: 'enderecos', key: 'municipalities', name: 'Municípios', desc: 'Dados de municípios.', query: 'polygon{POLYGON}' },
-  { group: 'enderecos', key: 'sicar_properties', name: 'Propriedades Rurais SICAR', desc: 'Propriedades rurais do CAR.', query: 'car{CAR_ID}' },
-  { group: 'enderecos', key: 'amazon_legal', name: 'Amazônia Legal', desc: 'Indicador de Amazônia Legal.', query: 'cep{01310100}' },
-  { group: 'enderecos', key: 'environmental_protection_areas', name: 'Áreas de Proteção Ambiental', desc: 'Presença e proximidade de APA.', query: 'cep{01310100}' },
-  { group: 'enderecos', key: 'biomes', name: 'Biomas', desc: 'Informação de bioma.', query: 'cep{01310100}' },
-  { group: 'enderecos', key: 'icmbio_embargoed_areas', name: 'Áreas Embargadas ICMBio', desc: 'Áreas sob embargo ambiental.', query: 'car{CAR_ID}' },
-  { group: 'enderecos', key: 'sicar_legal_reserves', name: 'Reservas Legais SICAR', desc: 'Proximidade de reservas legais.', query: 'car{CAR_ID}' },
-  { group: 'enderecos', key: 'archaeological_sites', name: 'Sítios Arqueológicos', desc: 'Existência de sítios arqueológicos.', query: 'cep{01310100}' },
-  { group: 'enderecos', key: 'indigenous_lands', name: 'Terras Indígenas', desc: 'Proximidade de terras indígenas.', query: 'cep{01310100}' },
-  { group: 'enderecos', key: 'conservation_units', name: 'Unidades de Conservação', desc: 'Presença de unidades de conservação.', query: 'cep{01310100}' },
-  { group: 'enderecos', key: 'agroecological_zoning', name: 'Zoneamento Agroecológico', desc: 'Aptidão agrícola e restrições.', query: 'cep{01310100}' },
-  { group: 'enderecos', key: 'address_risk_area', name: 'Áreas de Risco', desc: 'Proximidade de áreas de risco (IBGE).', query: 'cep{01310100}' },
-  { group: 'enderecos', key: 'crime_statistics', name: 'Estatísticas Criminais', desc: 'Incidência criminal municipal (MG, SP, RJ).', query: 'cep{01310100}' },
-  // VEÍCULOS
-  { group: 'veiculos', key: 'vehicle_plate_history', name: 'Histórico de Placa', desc: 'Dados cadastrais e históricos do veículo.', query: 'plate{ABC1234}' },
-  // PROCESSOS
-  { group: 'processos', key: 'cade_processes', name: 'Processos do CADE', desc: 'Processos do Conselho Administrativo de Defesa Econômica.', query: 'process_number{NR}' },
-  // PRODUTOS
-  { group: 'produtos', key: 'product_specifications', name: 'Ficha Técnica', desc: 'Características técnicas e descritivas do produto.', query: 'url{URL}' },
-  { group: 'produtos', key: 'product_images', name: 'Imagens do Produto', desc: 'Imagens atuais e históricas.', query: 'url{URL}' },
-  { group: 'produtos', key: 'current_price', name: 'Preço Atual', desc: 'Preços mais recentes em diferentes fontes.', query: 'url{URL}' },
-  { group: 'produtos', key: 'price_history', name: 'Histórico de Preços', desc: 'Evolução de preços ao longo do tempo.', query: 'url{URL}' },
-  { group: 'produtos', key: 'related_products', name: 'Produtos Relacionados', desc: 'Produtos associados.', query: 'url{URL}' },
-  { group: 'produtos', key: 'product_ratings', name: 'Notas e Avaliações', desc: 'Avaliações de diferentes lojas e marketplaces.', query: 'url{URL}' },
-  // ON-DEMAND
-  { group: 'ondemand', key: 'labor_claims_certificate', name: 'Ações Trabalhistas', desc: 'Certidão de ações trabalhistas (empresa).', query: 'doc{11222333000181}' },
-  { group: 'ondemand', key: 'disabled_persons_hiring', name: 'Contratação de PCD', desc: 'Compliance legal para empresas >100 funcionários.', query: 'doc{11222333000181}' },
-  { group: 'ondemand', key: 'cgu_negative_certificate', name: 'CGU Negativa', desc: 'Sanções e restrições: CEIS, CNEP, CEPIM.', query: 'doc{11222333000181}' },
-  { group: 'ondemand', key: 'cnj_negative_certificate', name: 'CNJ Negativa', desc: 'Condenações cíveis por improbidade.', query: 'doc{11222333000181}' },
-  { group: 'ondemand', key: 'state_debts_negative', name: 'Débitos Estaduais Negativa', desc: 'Ausência de débitos fiscais estaduais.', query: 'doc{11222333000181}' },
-  { group: 'ondemand', key: 'labor_debts_negative', name: 'Débitos Trabalhistas Negativa', desc: 'Ausência de débitos trabalhistas.', query: 'doc{11222333000181}' },
-  { group: 'ondemand', key: 'fgts_certificate', name: 'FGTS', desc: 'Certidão de regularidade do FGTS.', query: 'doc{11222333000181}' },
-  { group: 'ondemand', key: 'comex_habilitation', name: 'Habilitação COMEX', desc: 'Status de habilitação para operações de comércio exterior.', query: 'doc{11222333000181}' },
-  { group: 'ondemand', key: 'ibama_embargoes_certificate', name: 'IBAMA Embargos', desc: 'Embargos ambientais IBAMA.', query: 'doc{11222333000181}' },
-  { group: 'ondemand', key: 'ibama_negative_certificate', name: 'IBAMA Negativa', desc: 'Certidão de nada consta ambiental.', query: 'doc{11222333000181}' },
-  { group: 'ondemand', key: 'ibama_regulatory', name: 'IBAMA Regulatória', desc: 'Obrigações e enquadramentos ambientais.', query: 'doc{11222333000181}' },
-  { group: 'ondemand', key: 'irt_certificate', name: 'IRT', desc: 'Certidão de débito fiscal de propriedade rural.', query: 'doc{11222333000181}' },
-  { group: 'ondemand', key: 'health_licenses', name: 'Licenças Sanitárias', desc: 'Licenças sanitárias (SP).', query: 'doc{11222333000181}' },
-  { group: 'ondemand', key: 'pgfn_certificate', name: 'PGFN', desc: 'Certidão de débitos fiscais federais e Dívida Ativa.', query: 'doc{11222333000181}' },
-  { group: 'ondemand', key: 'siproquim', name: 'SIPROQUIM', desc: 'Habilitação para produtos químicos controlados.', query: 'doc{11222333000181}' },
-  { group: 'ondemand', key: 'sicar_certificate', name: 'SICAR', desc: 'Certidão do CAR.', query: 'car{CAR_ID}' },
-  { group: 'ondemand', key: 'federal_court_lawsuit_certificate', name: 'Ações Judiciais Nada Consta', desc: 'Certidão de nada consta de tribunais regionais federais.', query: 'doc{12345678909}' },
-  { group: 'ondemand', key: 'person_labor_claims', name: 'Ações Trabalhistas (Pessoa)', desc: 'Certidão de ações trabalhistas para pessoa física.', query: 'doc{12345678909}' },
-  { group: 'ondemand', key: 'cgu_correctional_negative', name: 'CGU Correcional Negativa', desc: 'Sanções em ePAD/CGU-PJ.', query: 'doc{12345678909}' },
-  { group: 'ondemand', key: 'person_cnj_negative', name: 'CNJ Negativa (Pessoa)', desc: 'Condenações por improbidade.', query: 'doc{12345678909}' },
-  { group: 'ondemand', key: 'person_state_debts_negative', name: 'Débitos Estaduais Negativa (Pessoa)', desc: 'Ausência de débitos estaduais.', query: 'doc{12345678909}' },
-  { group: 'ondemand', key: 'person_labor_debts_negative', name: 'Débitos Trabalhistas Negativa (Pessoa)', desc: 'Ausência de débitos trabalhistas.', query: 'doc{12345678909}' },
-  { group: 'ondemand', key: 'person_ibama_embargoes', name: 'IBAMA Embargos (Pessoa)', desc: 'Pessoas embargadas pelo IBAMA.', query: 'doc{12345678909}' },
-  { group: 'ondemand', key: 'person_ibama_negative', name: 'IBAMA Negativa (Pessoa)', desc: 'Nada consta ambiental.', query: 'doc{12345678909}' },
-  { group: 'ondemand', key: 'person_ibama_regularity', name: 'IBAMA Regularidade', desc: 'Certidão de regularidade IBAMA.', query: 'doc{12345678909}' },
-  { group: 'ondemand', key: 'person_irt', name: 'IRT (Pessoa)', desc: 'Débito fiscal rural.', query: 'doc{12345678909}' },
-  { group: 'ondemand', key: 'person_health_licenses', name: 'Licenças Sanitárias (Pessoa)', desc: 'Licenças sanitárias.', query: 'doc{12345678909}' },
-  { group: 'ondemand', key: 'person_pgfn', name: 'PGFN (Pessoa)', desc: 'Débitos fiscais federais.', query: 'doc{12345678909}' },
-  { group: 'ondemand', key: 'civil_police_criminal_record', name: 'Antecedentes Criminais (Polícia Civil)', desc: 'Certidão de antecedentes criminais estadual.', query: 'doc{12345678909}' },
-  { group: 'ondemand', key: 'federal_police_criminal_record', name: 'Antecedentes Criminais (Polícia Federal)', desc: 'Certidão de antecedentes criminais federal.', query: 'doc{12345678909}' },
-  { group: 'ondemand', key: 'tse_electoral_certificate', name: 'TSE Quitação Eleitoral', desc: 'Certidão de quitação eleitoral.', query: 'doc{12345678909}' },
-  { group: 'ondemand', key: 'mei_das_collection', name: 'Arrecadação Simples Nacional MEI', desc: 'Histórico de pagamento DAS.', query: 'doc{11222333000181}' },
-  { group: 'ondemand', key: 'cadin_debts', name: 'CADIN Débitos', desc: 'Registro em CADIN municipal/estadual.', query: 'doc{11222333000181}' },
-  { group: 'ondemand', key: 'comprot_processes', name: 'COMPROT Processos', desc: 'Processos no Ministério da Fazenda.', query: 'doc{11222333000181}' },
-  { group: 'ondemand', key: 'municipal_registration', name: 'Inscrição Municipal', desc: 'Dados de inscrição municipal.', query: 'doc{11222333000181}' },
-  { group: 'ondemand', key: 'simples_nacional_optant', name: 'Optante Simples Nacional', desc: 'Status de optante pelo Simples.', query: 'doc{11222333000181}' },
-  { group: 'ondemand', key: 'public_projects', name: 'Projetos Públicos', desc: 'Projetos com financiamento público.', query: 'doc{11222333000181}' },
-  { group: 'ondemand', key: 'qsa_receita', name: 'QSA Receita Federal', desc: 'Quadro societário da RFB.', query: 'doc{11222333000181}' },
-  { group: 'ondemand', key: 'legal_representative', name: 'Representante Legal RFB', desc: 'Representantes legais na RFB.', query: 'doc{11222333000181}' },
-  { group: 'ondemand', key: 'cnpj_situation', name: 'Situação CNPJ', desc: 'Situação cadastral do CNPJ.', query: 'doc{11222333000181}' },
-  { group: 'ondemand', key: 'sintegra', name: 'SINTEGRA', desc: 'Inscrição estadual SINTEGRA.', query: 'doc{11222333000181}' },
-  { group: 'ondemand', key: 'bacen_sanctions', name: 'BACEN Sanções', desc: 'Sanções administrativas do Banco Central.', query: 'doc{12345678909}' },
-  { group: 'ondemand', key: 'person_cadin_debts', name: 'CADIN Débitos (Pessoa)', desc: 'Registro em CADIN.', query: 'doc{12345678909}' },
-  { group: 'ondemand', key: 'person_comprot_processes', name: 'COMPROT Processos (Pessoa)', desc: 'Processos no Ministério da Fazenda.', query: 'doc{12345678909}' },
-  { group: 'ondemand', key: 'detran_traffic_fines', name: 'DETRAN Multas', desc: 'Infrações de trânsito.', query: 'doc{12345678909}' },
-  { group: 'ondemand', key: 'cpf_status', name: 'Status do CPF', desc: 'Situação cadastral do CPF na Receita Federal.', query: 'doc{12345678909}' },
-  { group: 'ondemand', key: 'person_sintegra', name: 'SINTEGRA (Pessoa)', desc: 'Inscrição estadual.', query: 'doc{12345678909}' },
-  { group: 'ondemand', key: 'sus_card', name: 'SUS Cartão', desc: 'Número do cartão SUS.', query: 'doc{12345678909}' },
-  { group: 'ondemand', key: 'tse_voting_location', name: 'TSE Local de Votação', desc: 'Local de votação e situação eleitoral.', query: 'doc{12345678909}' },
-  { group: 'ondemand', key: 'cte', name: 'CTe', desc: 'Conhecimento de Transporte Eletrônico.', query: 'cte_key{CHAVE}' },
-  { group: 'ondemand', key: 'nfe', name: 'NFe', desc: 'Nota Fiscal Eletrônica.', query: 'nfe_key{CHAVE}' },
-  { group: 'ondemand', key: 'detran_chassis_renavam', name: 'DETRAN Chassi e Renavam', desc: 'Dados cadastrais do veículo.', query: 'plate{ABC1234}' },
-  { group: 'ondemand', key: 'rntrc_transporters', name: 'RNTRC Transportadores', desc: 'Registro nacional de transportadores.', query: 'plate{ABC1234}' },
-  // MARKETPLACE
-  { group: 'marketplace', key: 'scr_positive_score', name: 'SCR Score Positivo', desc: 'Sistema de Informações de Crédito do BCB.', query: 'doc{11222333000181}' },
-  { group: 'marketplace', key: 'bureau_restrictive_data', name: 'Dados Restritivos Birô', desc: 'Cadastral + registros negativos + score.', query: 'doc{11222333000181}' },
-  { group: 'marketplace', key: 'quod_restrictive_data', name: 'Dados Restritivos Quod', desc: 'Sinais de risco e negativação potencial.', query: 'doc{11222333000181}' },
-  { group: 'marketplace', key: 'quod_negative_flags', name: 'Flags Negativos Quod', desc: 'Marcadores negativos de crédito.', query: 'doc{11222333000181}' },
-  { group: 'marketplace', key: 'multidata_credit_score', name: 'Score Multidados Birô', desc: 'Score consolidado de múltiplas fontes.', query: 'doc{11222333000181}' },
-  { group: 'marketplace', key: 'murabei_credit_score', name: 'Score Murabei', desc: 'Score 0-1000 baseado em ML.', query: 'doc{11222333000181}' },
-  { group: 'marketplace', key: 'quantum_credit_score', name: 'Score Quantum', desc: 'Score 0-999 Quantum.', query: 'doc{11222333000181}' },
-  { group: 'marketplace', key: 'quod_credit_score', name: 'Score Quod', desc: 'Score 300-1000 de comportamento creditício.', query: 'doc{11222333000181}' },
-  { group: 'marketplace', key: 'b2e_risk_classification', name: 'Classificação de Risco B2E', desc: 'Classificação de risco de fraude.', query: 'doc{12345678909}' },
-  { group: 'marketplace', key: 'person_scr_positive_score', name: 'SCR Score Positivo (Pessoa)', desc: 'SCR do BCB para pessoa física.', query: 'doc{12345678909}' },
-  { group: 'marketplace', key: 'person_bureau_restrictive', name: 'Dados Restritivos Birô (Pessoa)', desc: 'Restritivos + score de mercado.', query: 'doc{12345678909}' },
-  { group: 'marketplace', key: 'person_quod_restrictive', name: 'Dados Restritivos Quod (Pessoa)', desc: 'Risco de crédito Quod.', query: 'doc{12345678909}' },
-  { group: 'marketplace', key: 'person_quod_negative_flags', name: 'Flags Negativos Quod (Pessoa)', desc: 'Eventos negativos de crédito.', query: 'doc{12345678909}' },
-  { group: 'marketplace', key: 'person_multidata_score', name: 'Score Multidados (Pessoa)', desc: 'Score consolidado.', query: 'doc{12345678909}' },
-  { group: 'marketplace', key: 'person_quantum_score', name: 'Score Quantum (Pessoa)', desc: 'Score de probabilidade de inadimplência.', query: 'doc{12345678909}' },
-  { group: 'marketplace', key: 'person_quod_score', name: 'Score Quod (Pessoa)', desc: 'Score + indicadores de capacidade.', query: 'doc{12345678909}' },
-  { group: 'marketplace', key: 'quantum_revolving_score', name: 'Score Rotativo Quantum', desc: 'Score de risco para crédito rotativo.', query: 'doc{12345678909}' },
-  { group: 'marketplace', key: 'shareholding_percentage', name: 'Percentual Societário', desc: 'Participação exata por sócio.', query: 'doc{11222333000181}' },
-  { group: 'marketplace', key: 'ubo_final_beneficiaries', name: 'UBO Beneficiários Finais', desc: 'Beneficiários finais com participação >20%.', query: 'doc{11222333000181}' },
-  { group: 'marketplace', key: 'fuel_prices_region', name: 'Preços de Combustível Triad', desc: 'Preços de combustível na região.', query: 'latlong{-23.5505,-46.6333}' },
-  { group: 'marketplace', key: 'property_qualification', name: 'Qualificação do Imóvel', desc: 'Atributos estruturais e cadastrais.', query: 'cep{01310100}' },
-  { group: 'marketplace', key: 'device_cadaster_telesign', name: 'Dados de Aparelho Telesign', desc: 'Tipo de dispositivo, operadora, dados cadastrais.', query: 'phone{5511999999999}' },
-  { group: 'marketplace', key: 'portability_history_telesign', name: 'Histórico de Portabilidade Telesign', desc: 'Histórico de portabilidade do número.', query: 'phone{5511999999999}' },
-  { group: 'marketplace', key: 'quality_score_blu365', name: 'Score de Qualidade BLU365', desc: 'Probabilidade de entrega de SMS.', query: 'phone{5511999999999}' },
-  { group: 'marketplace', key: 'risk_score_telesign', name: 'Score de Risco Telesign', desc: 'Avaliação de risco do telefone.', query: 'phone{5511999999999}' },
-  { group: 'marketplace', key: 'sms_delivery_status_blu365', name: 'Status de Entrega SMS BLU365', desc: 'Status da última tentativa de SMS.', query: 'phone{5511999999999}' },
-  { group: 'marketplace', key: 'portability_status_telesign', name: 'Status de Portabilidade Telesign', desc: 'Operadora atual do número.', query: 'phone{5511999999999}' },
-  { group: 'marketplace', key: 'subscriber_status_telesign', name: 'Status do Assinante Telesign', desc: 'Tipo de plano, status da linha, tempo de posse.', query: 'phone{5511999999999}' },
-  { group: 'marketplace', key: 'ip_risk_data', name: 'Dados de Risco do IP', desc: 'Geolocalização, ISP, proxy, VPN, abuso.', query: 'ip{200.150.100.50}' },
-  // MODELAGEM
-  { group: 'modelagem', key: 'unified_modeling_x1_0_person', name: 'Modelagem x1.0 (Pessoa)', desc: 'Atributos essenciais para modelagem.', query: 'doc{12345678909}' },
-  { group: 'modelagem', key: 'unified_modeling_x1_5_person', name: 'Modelagem x1.5 (Pessoa)', desc: 'Atributos expandidos para maior poder explicativo.', query: 'doc{12345678909}' },
-  { group: 'modelagem', key: 'unified_modeling_x1_0_company', name: 'Modelagem x1.0 (Empresa)', desc: 'Variáveis consolidadas para modelagem de empresas.', query: 'doc{11222333000181}' },
-  { group: 'modelagem', key: 'unified_modeling_x1_5_company', name: 'Modelagem x1.5 (Empresa)', desc: 'Dataset expandido com atributos econômicos e financeiros.', query: 'doc{11222333000181}' },
+const apiGroups = [
+  { key: 'pessoas', name: 'API de Pessoas', subgroups: ['Dados Básicos', 'Contatos', 'Compliance Regulatório', 'Comportamento', 'Econômicos e Financeiros', 'Envolvimento Político', 'Exposição Pública', 'Presença Digital', 'Processos Judiciais', 'Profissionais', 'Risco', 'Sócio-Demográficos', 'Veículos'] },
+  { key: 'empresas', name: 'API de Empresas', subgroups: ['Ativos', 'Dados Básicos', 'Contato', 'Compliance Regulatório', 'Econômicos', 'Envolvimento Político', 'ESG', 'Exposição Pública', 'Presença Digital', 'Processos Judiciais', 'Reputação', 'Risco', 'Setoriais', 'Relacionamentos', 'Comportamento'] },
+  { key: 'enderecos', name: 'API de Endereços', subgroups: ['Atividade Econômica', 'Dados Básicos', 'Propriedades Rurais', 'Proteção Ambiental e Cultural', 'Risco e Segurança Pública', 'População'] },
+  { key: 'veiculos', name: 'API de Veículos', subgroups: ['Dados Básicos'] },
+  { key: 'processos', name: 'API de Processos', subgroups: ['Outros Processos'] },
+  { key: 'produtos', name: 'API de Produtos', subgroups: ['Dados Básicos', 'Precificação', 'Relacionamentos', 'Reputação'] },
+  { key: 'ondemand', name: 'API On-Demand', subgroups: ['Certidões de Empresas', 'Certidões de Pessoas', 'Certidões de Endereços', 'Consultas de Empresas', 'Consultas de Pessoas', 'Consultas de Veículos', 'Consultas de Notas Fiscais'] },
+  { key: 'marketplace', name: 'API Marketplace', subgroups: ['Crédito - Empresas', 'Crédito - Pessoas', 'Empresas', 'Endereços', 'Telefones', 'IP'] },
+  { key: 'modelagem', name: 'API de Modelagem', subgroups: ['Pessoas', 'Empresas'] },
 ]
 
-function makePath(group, ds) {
-  const g = groups[group]
-  const path = `/api/consultas/${group}/${ds.key}`
-  const responses = {
-    '200': { description: 'Consulta realizada com sucesso', content: { 'application/json': { schema: { $ref: '#/components/schemas/QueryResponse' } } } },
-    '400': { description: 'Requisição inválida' },
-    '401': { description: 'Token ausente ou inválido' },
-    '402': { description: 'Saldo insuficiente', content: { 'application/json': { schema: { $ref: '#/components/schemas/InsufficientCredits' } } } }
+const datasets = [
+  // PESSOAS | Dados Básicos
+  { g: 'pessoas', s: 'Dados Básicos', k: 'basic_data', n: 'Dados Básicos', d: 'Dados cadastrais consolidados: nome, CPF, data de nascimento, filiação, situação do CPF, sexo, nacionalidade, naturalidade.', q: 'doc{12345678909}' },
+  { g: 'pessoas', s: 'Dados Básicos', k: 'basic_data_recent', n: 'Dados Básicos com Recência Configurável', d: 'Dados cadastrais filtrados por janela temporal configurável.', q: 'doc{12345678909}' },
+  { g: 'pessoas', s: 'Dados Básicos', k: 'basic_data_history', n: 'Histórico de Dados Básicos', d: 'Alterações cadastrais ao longo do tempo com datas de observação.', q: 'doc{12345678909}' },
+  // PESSOAS | Contatos
+  { g: 'pessoas', s: 'Contatos', k: 'emails', n: 'E-mails', d: 'E-mails associados à pessoa com status de validação, datas de referência e recorrência.', q: 'doc{12345678909}' },
+  { g: 'pessoas', s: 'Contatos', k: 'related_emails', n: 'E-mails de Pessoas Relacionadas', d: 'E-mails de familiares, sócios e co-residentes.', q: 'doc{12345678909}' },
+  { g: 'pessoas', s: 'Contatos', k: 'phones', n: 'Telefones', d: 'Telefones com tipo, status, operadora, estabilidade e recorrência.', q: 'doc{12345678909}' },
+  { g: 'pessoas', s: 'Contatos', k: 'related_phones', n: 'Telefones de Pessoas Relacionadas', d: 'Telefones de pessoas relacionadas.', q: 'doc{12345678909}' },
+  { g: 'pessoas', s: 'Contatos', k: 'addresses', n: 'Endereços', d: 'Endereços com tipo, completude, datas de referência e estabilidade.', q: 'doc{12345678909}' },
+  { g: 'pessoas', s: 'Contatos', k: 'related_addresses', n: 'Endereços de Pessoas Relacionadas', d: 'Endereços de pessoas relacionadas.', q: 'doc{12345678909}' },
+  { g: 'pessoas', s: 'Contatos', k: 'registration_data', n: 'Dados de Registro', d: 'Identificação + contatos consolidados para validação cadastral.', q: 'doc{12345678909}' },
+  // PESSOAS | Compliance Regulatório
+  { g: 'pessoas', s: 'Compliance Regulatório', k: 'kyc_compliance', n: 'KYC e Compliance', d: 'Indicadores de PEP, listas restritivas, impedimentos públicos e score de risco regulatório.', q: 'doc{12345678909}' },
+  { g: 'pessoas', s: 'Compliance Regulatório', k: 'kyc_compliance_family', n: 'KYC e Compliance dos Familiares de Primeiro Nível', d: 'Dados de compliance de familiares de primeiro nível.', q: 'doc{12345678909}' },
+  { g: 'pessoas', s: 'Compliance Regulatório', k: 'gambling_compliance', n: 'Compliance de Casas de Apostas', d: 'Participação societária em empresas de apostas online.', q: 'doc{12345678909}' },
+  // PESSOAS | Comportamento
+  { g: 'pessoas', s: 'Comportamento', k: 'online_presence', n: 'Presença Online', d: 'Intensidade de presença digital em bandas A-H (30/90/180/365 dias).', q: 'doc{12345678909}' },
+  { g: 'pessoas', s: 'Comportamento', k: 'family_online_presence', n: 'Presença Online Familiar', d: 'Atividade digital agregada do núcleo familiar.', q: 'doc{12345678909}' },
+  { g: 'pessoas', s: 'Comportamento', k: 'web_passages', n: 'Passagens pela Web', d: 'Ocorrências na web qualificadas como positivas, negativas ou neutras.', q: 'doc{12345678909}' },
+  { g: 'pessoas', s: 'Comportamento', k: 'online_betting_propensity', n: 'Propensão a Apostas Online', d: 'Score de propensão em banda A-H.', q: 'doc{12345678909}' },
+  { g: 'pessoas', s: 'Comportamento', k: 'digital_financial_behavior', n: 'Comportamento Financeiro Digital', d: 'Classificação A-H de maturidade financeira digital.', q: 'doc{12345678909}' },
+  // PESSOAS | Econômicos e Financeiros
+  { g: 'pessoas', s: 'Econômicos e Financeiros', k: 'financial_info', n: 'Informações Financeiras', d: 'Indicadores financeiros: renda estimada, situação empregatícia, vínculos previdenciários.', q: 'doc{12345678909}' },
+  { g: 'pessoas', s: 'Econômicos e Financeiros', k: 'family_financial_info', n: 'Informações Financeiras Familiares', d: 'Indicadores financeiros do núcleo familiar.', q: 'doc{12345678909}' },
+  { g: 'pessoas', s: 'Econômicos e Financeiros', k: 'social_benefits', n: 'Programas de Benefícios Sociais', d: 'Participação em programas de transferência de renda.', q: 'doc{12345678909}' },
+  { g: 'pessoas', s: 'Econômicos e Financeiros', k: 'family_social_benefits', n: 'Benefícios Sociais Familiares', d: 'Benefícios sociais de familiares.', q: 'doc{12345678909}' },
+  { g: 'pessoas', s: 'Econômicos e Financeiros', k: 'industrial_property', n: 'Propriedades Industriais', d: 'Marcas e patentes registradas.', q: 'doc{12345678909}' },
+  { g: 'pessoas', s: 'Econômicos e Financeiros', k: 'government_debtors', n: 'Devedores do Governo', d: 'Registros de dívidas ativas com órgãos públicos.', q: 'doc{12345678909}' },
+  // PESSOAS | Envolvimento Político
+  { g: 'pessoas', s: 'Envolvimento Político', k: 'political_involvement_level', n: 'Nível de Envolvimento Político', d: 'Indicador consolidado de participação eleitoral, doações e cargos.', q: 'doc{12345678909}' },
+  { g: 'pessoas', s: 'Envolvimento Político', k: 'electoral_candidates', n: 'Candidatos Eleitorais', d: 'Histórico de candidaturas: cargo, partido, ano, resultado.', q: 'doc{12345678909}' },
+  { g: 'pessoas', s: 'Envolvimento Político', k: 'electoral_donations', n: 'Doações Eleitorais', d: 'Doações eleitorais realizadas ou recebidas.', q: 'doc{12345678909}' },
+  { g: 'pessoas', s: 'Envolvimento Político', k: 'family_political_history', n: 'Histórico Político Familiar', d: 'Envolvimento político de familiares.', q: 'doc{12345678909}' },
+  { g: 'pessoas', s: 'Envolvimento Político', k: 'electoral_service_providers', n: 'Prestadores de Serviços Eleitorais', d: 'Vínculos com campanhas, partidos ou estruturas políticas.', q: 'doc{12345678909}' },
+  // PESSOAS | Exposição Pública
+  { g: 'pessoas', s: 'Exposição Pública', k: 'popularity_data', n: 'Dados de Popularidade', d: 'Indicador de influência pública consolidado.', q: 'doc{12345678909}' },
+  { g: 'pessoas', s: 'Exposição Pública', k: 'media_exposure', n: 'Exposição e Perfil na Mídia', d: 'Frequência, visibilidade e sentimento em conteúdo jornalístico.', q: 'doc{12345678909}' },
+  // PESSOAS | Presença Digital
+  { g: 'pessoas', s: 'Presença Digital', k: 'online_ads', n: 'Anúncios Online', d: 'Perfis de anunciante em portais e marketplaces.', q: 'doc{12345678909}' },
+  { g: 'pessoas', s: 'Presença Digital', k: 'website_data', n: 'Dados de Sites', d: 'Sites e domínios associados.', q: 'doc{12345678909}' },
+  // PESSOAS | Processos Judiciais
+  { g: 'pessoas', s: 'Processos Judiciais', k: 'processes', n: 'Processos Judiciais e Administrativos', d: 'Processos cíveis, trabalhistas, criminais e administrativos.', q: 'doc{12345678909}' },
+  { g: 'pessoas', s: 'Processos Judiciais', k: 'family_processes', n: 'Processos Judiciais Familiares', d: 'Processos de familiares de primeiro grau.', q: 'doc{12345678909}' },
+  { g: 'pessoas', s: 'Processos Judiciais', k: 'process_distribution', n: 'Distribuição de Processos', d: 'Visão agregada: distribuição por tipo, instância e status.', q: 'doc{12345678909}' },
+  { g: 'pessoas', s: 'Processos Judiciais', k: 'family_process_distribution', n: 'Distribuição de Processos Familiares', d: 'Indicadores agregados de processos de familiares.', q: 'doc{12345678909}' },
+  // PESSOAS | Profissionais
+  { g: 'pessoas', s: 'Profissionais', k: 'professional_data', n: 'Dados Profissionais', d: 'Ocupação, cargos, áreas de atuação, empregadores.', q: 'doc{12345678909}' },
+  { g: 'pessoas', s: 'Profissionais', k: 'professional_turnover', n: 'Turnover Profissional', d: 'Indicadores de mudanças profissionais.', q: 'doc{12345678909}' },
+  { g: 'pessoas', s: 'Profissionais', k: 'academic_history', n: 'Histórico Escolar e Acadêmico', d: 'Cursos, graduação, pós, MBA.', q: 'doc{12345678909}' },
+  { g: 'pessoas', s: 'Profissionais', k: 'awards_certifications', n: 'Prêmios e Certificações', d: 'Reconhecimentos públicos e certificações.', q: 'doc{12345678909}' },
+  { g: 'pessoas', s: 'Profissionais', k: 'licenses_authorizations', n: 'Licenças e Autorizações', d: 'Permissões profissionais.', q: 'doc{12345678909}' },
+  { g: 'pessoas', s: 'Profissionais', k: 'professional_councils', n: 'Conselhos de Classe', d: 'Inscrição em conselhos profissionais (CRM, OAB, CREA, CRC).', q: 'doc{12345678909}' },
+  { g: 'pessoas', s: 'Profissionais', k: 'public_servants', n: 'Servidores Públicos', d: 'Vínculos com a administração pública.', q: 'doc{12345678909}' },
+  { g: 'pessoas', s: 'Profissionais', k: 'sports_exposure', n: 'Exposição Esportiva', d: 'Participação esportiva: competições, clubes.', q: 'doc{12345678909}' },
+  // PESSOAS | Risco
+  { g: 'pessoas', s: 'Risco', k: 'financial_risk', n: 'Risco Financeiro', d: 'Inadimplência, dívidas ativas, scores de risco.', q: 'doc{12345678909}' },
+  { g: 'pessoas', s: 'Risco', k: 'family_financial_risk', n: 'Risco Financeiro Familiar', d: 'Risco financeiro de familiares.', q: 'doc{12345678909}' },
+  { g: 'pessoas', s: 'Risco', k: 'collection_presence', n: 'Presença em Cobrança', d: 'Ocorrências em processos de cobrança.', q: 'doc{12345678909}' },
+  { g: 'pessoas', s: 'Risco', k: 'default_probability', n: 'Probabilidade de Negativação', d: 'Score preditivo de negativação futura.', q: 'doc{12345678909}' },
+  // PESSOAS | Sócio-Demográficos
+  { g: 'pessoas', s: 'Sócio-Demográficos', k: 'sociodemographic_info', n: 'Informações Sócio-Demográficas', d: 'Perfil populacional da região (IBGE).', q: 'doc{12345678909}' },
+  // PESSOAS | Veículos
+  { g: 'pessoas', s: 'Veículos', k: 'vehicles', n: 'Veículos Associados', d: 'Veículos relacionados por anúncios e bases públicas.', q: 'doc{12345678909}' },
+  // EMPRESAS
+  { g: 'empresas', s: 'Dados Básicos', k: 'company_basic_data', n: 'Dados Básicos', d: 'Dados cadastrais consolidados: razão social, CNPJ, data de abertura, CNAE.', q: 'doc{11222333000181}' },
+  { g: 'empresas', s: 'Dados Básicos', k: 'company_basic_data_history', n: 'Histórico de Dados Básicos', d: 'Alterações cadastrais ao longo do tempo.', q: 'doc{11222333000181}' },
+  { g: 'empresas', s: 'Dados Básicos', k: 'mcc_data', n: 'Categoria Comercial MCC', d: 'Código MCC para classificação de serviços financeiros.', q: 'doc{11222333000181}' },
+  { g: 'empresas', s: 'Contato', k: 'company_registration_data', n: 'Dados de Registro', d: 'Identificação + contatos consolidados.', q: 'doc{11222333000181}' },
+  { g: 'empresas', s: 'Contato', k: 'company_emails', n: 'E-mails', d: 'E-mails da empresa.', q: 'doc{11222333000181}' },
+  { g: 'empresas', s: 'Contato', k: 'company_related_emails', n: 'E-mails de Relacionados', d: 'E-mails de pessoas relacionadas.', q: 'doc{11222333000181}' },
+  { g: 'empresas', s: 'Contato', k: 'company_phones', n: 'Telefones', d: 'Telefones da empresa.', q: 'doc{11222333000181}' },
+  { g: 'empresas', s: 'Contato', k: 'company_related_phones', n: 'Telefones de Relacionados', d: 'Telefones de pessoas relacionadas.', q: 'doc{11222333000181}' },
+  { g: 'empresas', s: 'Contato', k: 'company_addresses', n: 'Endereços', d: 'Endereços da empresa.', q: 'doc{11222333000181}' },
+  { g: 'empresas', s: 'Contato', k: 'company_related_addresses', n: 'Endereços de Relacionados', d: 'Endereços de pessoas relacionadas.', q: 'doc{11222333000181}' },
+  { g: 'empresas', s: 'Compliance Regulatório', k: 'company_kyc_compliance', n: 'KYC e Compliance', d: 'PEP, sanções, restrições.', q: 'doc{11222333000181}' },
+  { g: 'empresas', s: 'Compliance Regulatório', k: 'partner_kyc_compliance', n: 'KYC dos Sócios', d: 'Compliance dos sócios.', q: 'doc{11222333000181}' },
+  { g: 'empresas', s: 'Compliance Regulatório', k: 'employee_kyc_compliance', n: 'KYC dos Funcionários', d: 'Compliance dos funcionários.', q: 'doc{11222333000181}' },
+  { g: 'empresas', s: 'Compliance Regulatório', k: 'economic_group_kyc_compliance', n: 'KYC do Grupo Econômico', d: 'Compliance de todo o grupo.', q: 'doc{11222333000181}' },
+  { g: 'empresas', s: 'Ativos', k: 'company_industrial_property', n: 'Propriedades Industriais', d: 'Marcas e patentes.', q: 'doc{11222333000181}' },
+  { g: 'empresas', s: 'Ativos', k: 'employee_industrial_property', n: 'Propriedades Industriais de Funcionários', d: 'Propriedade intelectual de funcionários.', q: 'doc{11222333000181}' },
+  { g: 'empresas', s: 'Ativos', k: 'partner_industrial_property', n: 'Propriedades Industriais de Sócios', d: 'Propriedade intelectual de sócios.', q: 'doc{11222333000181}' },
+  { g: 'empresas', s: 'Econômicos', k: 'company_evolution', n: 'Evolução da Empresa', d: 'Capital social, funcionários e sócios ao longo do tempo.', q: 'doc{11222333000181}' },
+  { g: 'empresas', s: 'Econômicos', k: 'activity_indicators', n: 'Indicadores de Atividade', d: 'Faixa de receita, funcionários, presença digital.', q: 'doc{11222333000181}' },
+  { g: 'empresas', s: 'Envolvimento Político', k: 'company_political_involvement', n: 'Envolvimento Político', d: 'Score de participação política do quadro societário.', q: 'doc{11222333000181}' },
+  { g: 'empresas', s: 'Envolvimento Político', k: 'company_electoral_donations', n: 'Doações Eleitorais', d: 'Doações da empresa.', q: 'doc{11222333000181}' },
+  { g: 'empresas', s: 'Envolvimento Político', k: 'partner_electoral_donations', n: 'Doações Eleitorais de Sócios', d: 'Doações de sócios.', q: 'doc{11222333000181}' },
+  { g: 'empresas', s: 'ESG', k: 'union_agreements', n: 'Acordos Sindicais', d: 'Convenções coletivas de trabalho.', q: 'doc{11222333000181}' },
+  { g: 'empresas', s: 'ESG', k: 'social_awareness', n: 'Consciência Social', d: 'Acessibilidade, diversidade, gap salarial.', q: 'doc{11222333000181}' },
+  { g: 'empresas', s: 'Exposição Pública', k: 'company_media_exposure', n: 'Exposição na Mídia', d: 'Presença em conteúdo jornalístico.', q: 'doc{11222333000181}' },
+  { g: 'empresas', s: 'Exposição Pública', k: 'shareholder_influence', n: 'Influência do Quadro Societário', d: 'Influência inferida do quadro de sócios.', q: 'doc{11222333000181}' },
+  { g: 'empresas', s: 'Presença Digital', k: 'company_online_ads', n: 'Anúncios Online', d: 'Perfis em marketplaces.', q: 'doc{11222333000181}' },
+  { g: 'empresas', s: 'Presença Digital', k: 'company_website_data', n: 'Dados de Sites', d: 'Sites, domínios, tecnologias.', q: 'doc{11222333000181}' },
+  { g: 'empresas', s: 'Presença Digital', k: 'marketplaces', n: 'Marketplaces', d: 'Presença em e-commerce.', q: 'doc{11222333000181}' },
+  { g: 'empresas', s: 'Processos Judiciais', k: 'company_processes', n: 'Processos Judiciais', d: 'Processos da empresa.', q: 'doc{11222333000181}' },
+  { g: 'empresas', s: 'Processos Judiciais', k: 'partner_processes', n: 'Processos dos Sócios', d: 'Processos dos sócios.', q: 'doc{11222333000181}' },
+  { g: 'empresas', s: 'Processos Judiciais', k: 'company_process_distribution', n: 'Distribuição de Processos', d: 'Dados agregados.', q: 'doc{11222333000181}' },
+  { g: 'empresas', s: 'Processos Judiciais', k: 'partner_process_distribution', n: 'Distribuição de Processos dos Sócios', d: 'Dados agregados dos sócios.', q: 'doc{11222333000181}' },
+  { g: 'empresas', s: 'Relacionamentos', k: 'company_relationships', n: 'Relacionamentos', d: 'Entidades com vínculo com a empresa.', q: 'doc{11222333000181}' },
+  { g: 'empresas', s: 'Relacionamentos', k: 'economic_group_relationships', n: 'Relacionamentos do Grupo Econômico', d: 'Entidades do mesmo grupo.', q: 'doc{11222333000181}' },
+  { g: 'empresas', s: 'Relacionamentos', k: 'qsa_recent', n: 'QSA com Recência Configurável', d: 'Estrutura societária em tempo real.', q: 'doc{11222333000181}' },
+  { g: 'empresas', s: 'Reputação', k: 'reviews_reputation', n: 'Avaliações e Reputação', d: 'Reputação em múltiplas plataformas.', q: 'doc{11222333000181}' },
+  { g: 'empresas', s: 'Reputação', k: 'company_awards_certifications', n: 'Prêmios e Certificações', d: 'Prêmios e certificações.', q: 'doc{11222333000181}' },
+  { g: 'empresas', s: 'Risco', k: 'company_collection_presence', n: 'Presença em Cobrança', d: 'Passagem por cobrança.', q: 'doc{11222333000181}' },
+  { g: 'empresas', s: 'Risco', k: 'company_government_debtors', n: 'Devedores do Governo', d: 'Dívida ativa e FGTS.', q: 'doc{11222333000181}' },
+  { g: 'empresas', s: 'Setoriais', k: 'investment_funds_data', n: 'Fundos de Investimento', d: 'Empresas registradas na CVM.', q: 'doc{11222333000181}' },
+  { g: 'empresas', s: 'Setoriais', k: 'civil_works_data', n: 'Obras Civis', d: 'Obras registradas no CNO.', q: 'doc{11222333000181}' },
+  { g: 'empresas', s: 'Setoriais', k: 'financial_market_data', n: 'Mercado Financeiro', d: 'Balanço e estrutura acionária.', q: 'doc{11222333000181}' },
+  { g: 'empresas', s: 'Comportamento', k: 'company_digital_financial_behavior', n: 'Comportamento Financeiro Digital', d: 'Classificação A-H de maturidade.', q: 'doc{11222333000181}' },
+  // ENDEREÇOS
+  { g: 'enderecos', s: 'Atividade Econômica', k: 'company_statistics', n: 'Estatísticas de Empresas', d: 'Perfil econômico da região.', q: 'cep{01310100}' },
+  { g: 'enderecos', s: 'Dados Básicos', k: 'municipalities', n: 'Municípios', d: 'Dados de municípios.', q: 'polygon{POLYGON}' },
+  { g: 'enderecos', s: 'Propriedades Rurais', k: 'sicar_properties', n: 'Propriedades Rurais SICAR', d: 'Propriedades do CAR.', q: 'car{CAR_ID}' },
+  { g: 'enderecos', s: 'Proteção Ambiental e Cultural', k: 'amazon_legal', n: 'Amazônia Legal', d: 'Indicador de Amazônia Legal.', q: 'cep{01310100}' },
+  { g: 'enderecos', s: 'Proteção Ambiental e Cultural', k: 'environmental_protection_areas', n: 'Áreas de Proteção Ambiental', d: 'Presença de APA.', q: 'cep{01310100}' },
+  { g: 'enderecos', s: 'Proteção Ambiental e Cultural', k: 'biomes', n: 'Biomas', d: 'Informação de bioma.', q: 'cep{01310100}' },
+  { g: 'enderecos', s: 'Proteção Ambiental e Cultural', k: 'icmbio_embargoed_areas', n: 'Áreas Embargadas ICMBio', d: 'Embargos ambientais.', q: 'car{CAR_ID}' },
+  { g: 'enderecos', s: 'Proteção Ambiental e Cultural', k: 'sicar_legal_reserves', n: 'Reservas Legais SICAR', d: 'Proximidade de reservas.', q: 'car{CAR_ID}' },
+  { g: 'enderecos', s: 'Proteção Ambiental e Cultural', k: 'archaeological_sites', n: 'Sítios Arqueológicos', d: 'Sítios arqueológicos.', q: 'cep{01310100}' },
+  { g: 'enderecos', s: 'Proteção Ambiental e Cultural', k: 'indigenous_lands', n: 'Terras Indígenas', d: 'Proximidade de terras.', q: 'cep{01310100}' },
+  { g: 'enderecos', s: 'Proteção Ambiental e Cultural', k: 'conservation_units', n: 'Unidades de Conservação', d: 'Presença de UC.', q: 'cep{01310100}' },
+  { g: 'enderecos', s: 'Proteção Ambiental e Cultural', k: 'agroecological_zoning', n: 'Zoneamento Agroecológico', d: 'Aptidão agrícola.', q: 'cep{01310100}' },
+  { g: 'enderecos', s: 'Risco e Segurança Pública', k: 'address_risk_area', n: 'Áreas de Risco', d: 'Proximidade de áreas de risco.', q: 'cep{01310100}' },
+  { g: 'enderecos', s: 'Risco e Segurança Pública', k: 'crime_statistics', n: 'Estatísticas Criminais', d: 'Incidência criminal (MG, SP, RJ).', q: 'cep{01310100}' },
+  // VEÍCULOS
+  { g: 'veiculos', s: 'Dados Básicos', k: 'vehicle_plate_history', n: 'Histórico de Placa', d: 'Dados cadastrais e históricos.', q: 'plate{ABC1234}' },
+  // PROCESSOS
+  { g: 'processos', s: 'Outros Processos', k: 'cade_processes', n: 'Processos do CADE', d: 'Processos do CADE.', q: 'process_number{NR}' },
+  // PRODUTOS
+  { g: 'produtos', s: 'Dados Básicos', k: 'product_specifications', n: 'Ficha Técnica', d: 'Características técnicas.', q: 'url{URL}' },
+  { g: 'produtos', s: 'Dados Básicos', k: 'product_images', n: 'Imagens do Produto', d: 'Imagens atuais e históricas.', q: 'url{URL}' },
+  { g: 'produtos', s: 'Precificação', k: 'current_price', n: 'Preço Atual', d: 'Preços em diferentes fontes.', q: 'url{URL}' },
+  { g: 'produtos', s: 'Precificação', k: 'price_history', n: 'Histórico de Preços', d: 'Evolução de preços.', q: 'url{URL}' },
+  { g: 'produtos', s: 'Relacionamentos', k: 'related_products', n: 'Produtos Relacionados', d: 'Produtos associados.', q: 'url{URL}' },
+  { g: 'produtos', s: 'Reputação', k: 'product_ratings', n: 'Notas e Avaliações', d: 'Avaliações de lojas.', q: 'url{URL}' },
+  // ONDEMAND
+  { g: 'ondemand', s: 'Certidões de Empresas', k: 'labor_claims_certificate', n: 'Ações Trabalhistas', d: 'Certidão de ações trabalhistas.', q: 'doc{11222333000181}' },
+  { g: 'ondemand', s: 'Certidões de Empresas', k: 'disabled_persons_hiring', n: 'Contratação de PCD', d: 'Compliance para >100 funcionários.', q: 'doc{11222333000181}' },
+  { g: 'ondemand', s: 'Certidões de Empresas', k: 'cgu_negative_certificate', n: 'CGU Negativa', d: 'Sanções: CEIS, CNEP, CEPIM.', q: 'doc{11222333000181}' },
+  { g: 'ondemand', s: 'Certidões de Empresas', k: 'cnj_negative_certificate', n: 'CNJ Negativa', d: 'Condenações por improbidade.', q: 'doc{11222333000181}' },
+  { g: 'ondemand', s: 'Certidões de Empresas', k: 'state_debts_negative', n: 'Débitos Estaduais Negativa', d: 'Ausência de débitos estaduais.', q: 'doc{11222333000181}' },
+  { g: 'ondemand', s: 'Certidões de Empresas', k: 'labor_debts_negative', n: 'Débitos Trabalhistas Negativa', d: 'Ausência de débitos trabalhistas.', q: 'doc{11222333000181}' },
+  { g: 'ondemand', s: 'Certidões de Empresas', k: 'fgts_certificate', n: 'FGTS', d: 'Regularidade do FGTS.', q: 'doc{11222333000181}' },
+  { g: 'ondemand', s: 'Certidões de Empresas', k: 'comex_habilitation', n: 'Habilitação COMEX', d: 'Comércio exterior.', q: 'doc{11222333000181}' },
+  { g: 'ondemand', s: 'Certidões de Empresas', k: 'ibama_embargoes_certificate', n: 'IBAMA Embargos', d: 'Embargos ambientais.', q: 'doc{11222333000181}' },
+  { g: 'ondemand', s: 'Certidões de Empresas', k: 'ibama_negative_certificate', n: 'IBAMA Negativa', d: 'Nada consta ambiental.', q: 'doc{11222333000181}' },
+  { g: 'ondemand', s: 'Certidões de Empresas', k: 'ibama_regulatory', n: 'IBAMA Regulatória', d: 'Obrigações ambientais.', q: 'doc{11222333000181}' },
+  { g: 'ondemand', s: 'Certidões de Empresas', k: 'irt_certificate', n: 'IRT', d: 'Débito fiscal rural.', q: 'doc{11222333000181}' },
+  { g: 'ondemand', s: 'Certidões de Empresas', k: 'health_licenses', n: 'Licenças Sanitárias', d: 'Licenças (SP).', q: 'doc{11222333000181}' },
+  { g: 'ondemand', s: 'Certidões de Empresas', k: 'pgfn_certificate', n: 'PGFN', d: 'Débitos federais.', q: 'doc{11222333000181}' },
+  { g: 'ondemand', s: 'Certidões de Empresas', k: 'siproquim', n: 'SIPROQUIM', d: 'Produtos químicos.', q: 'doc{11222333000181}' },
+  { g: 'ondemand', s: 'Certidões de Endereços', k: 'sicar_certificate', n: 'SICAR', d: 'Certidão do CAR.', q: 'car{CAR_ID}' },
+  { g: 'ondemand', s: 'Certidões de Pessoas', k: 'federal_court_lawsuit_certificate', n: 'Ações Judiciais Nada Consta', d: 'Nada consta de tribunais federais.', q: 'doc{12345678909}' },
+  { g: 'ondemand', s: 'Certidões de Pessoas', k: 'person_labor_claims', n: 'Ações Trabalhistas (Pessoa)', d: 'Certidão trabalhista.', q: 'doc{12345678909}' },
+  { g: 'ondemand', s: 'Certidões de Pessoas', k: 'cgu_correctional_negative', n: 'CGU Correcional Negativa', d: 'Sanções ePAD.', q: 'doc{12345678909}' },
+  { g: 'ondemand', s: 'Certidões de Pessoas', k: 'person_cnj_negative', n: 'CNJ Negativa (Pessoa)', d: 'Condenações.', q: 'doc{12345678909}' },
+  { g: 'ondemand', s: 'Certidões de Pessoas', k: 'person_state_debts_negative', n: 'Débitos Estaduais Negativa (Pessoa)', d: 'Sem débitos estaduais.', q: 'doc{12345678909}' },
+  { g: 'ondemand', s: 'Certidões de Pessoas', k: 'person_labor_debts_negative', n: 'Débitos Trabalhistas Negativa (Pessoa)', d: 'Sem débitos trabalhistas.', q: 'doc{12345678909}' },
+  { g: 'ondemand', s: 'Certidões de Pessoas', k: 'person_ibama_embargoes', n: 'IBAMA Embargos (Pessoa)', d: 'Embargados pelo IBAMA.', q: 'doc{12345678909}' },
+  { g: 'ondemand', s: 'Certidões de Pessoas', k: 'person_ibama_negative', n: 'IBAMA Negativa (Pessoa)', d: 'Nada consta.', q: 'doc{12345678909}' },
+  { g: 'ondemand', s: 'Certidões de Pessoas', k: 'person_ibama_regularity', n: 'IBAMA Regularidade', d: 'Regularidade IBAMA.', q: 'doc{12345678909}' },
+  { g: 'ondemand', s: 'Certidões de Pessoas', k: 'person_irt', n: 'IRT (Pessoa)', d: 'Débito rural.', q: 'doc{12345678909}' },
+  { g: 'ondemand', s: 'Certidões de Pessoas', k: 'person_health_licenses', n: 'Licenças Sanitárias (Pessoa)', d: 'Licenças.', q: 'doc{12345678909}' },
+  { g: 'ondemand', s: 'Certidões de Pessoas', k: 'person_pgfn', n: 'PGFN (Pessoa)', d: 'Débitos federais.', q: 'doc{12345678909}' },
+  { g: 'ondemand', s: 'Certidões de Pessoas', k: 'civil_police_criminal_record', n: 'Antecedentes Criminais (Polícia Civil)', d: 'Antecedentes estaduais.', q: 'doc{12345678909}' },
+  { g: 'ondemand', s: 'Certidões de Pessoas', k: 'federal_police_criminal_record', n: 'Antecedentes Criminais (Polícia Federal)', d: 'Antecedentes federais.', q: 'doc{12345678909}' },
+  { g: 'ondemand', s: 'Certidões de Pessoas', k: 'tse_electoral_certificate', n: 'TSE Quitação Eleitoral', d: 'Quitação eleitoral.', q: 'doc{12345678909}' },
+  // ONDEMAND | Consultas de Empresas
+  { g: 'ondemand', s: 'Consultas de Empresas', k: 'mei_das_collection', n: 'Arrecadação MEI', d: 'Histórico DAS.', q: 'doc{11222333000181}' },
+  { g: 'ondemand', s: 'Consultas de Empresas', k: 'cadin_debts', n: 'CADIN Débitos', d: 'Registro em CADIN.', q: 'doc{11222333000181}' },
+  { g: 'ondemand', s: 'Consultas de Empresas', k: 'comprot_processes', n: 'COMPROT Processos', d: 'Processos no MF.', q: 'doc{11222333000181}' },
+  { g: 'ondemand', s: 'Consultas de Empresas', k: 'municipal_registration', n: 'Inscrição Municipal', d: 'Inscrição municipal.', q: 'doc{11222333000181}' },
+  { g: 'ondemand', s: 'Consultas de Empresas', k: 'simples_nacional_optant', n: 'Optante Simples Nacional', d: 'Status Simples.', q: 'doc{11222333000181}' },
+  { g: 'ondemand', s: 'Consultas de Empresas', k: 'public_projects', n: 'Projetos Públicos', d: 'Projetos com financiamento público.', q: 'doc{11222333000181}' },
+  { g: 'ondemand', s: 'Consultas de Empresas', k: 'qsa_receita', n: 'QSA Receita Federal', d: 'Quadro societário RFB.', q: 'doc{11222333000181}' },
+  { g: 'ondemand', s: 'Consultas de Empresas', k: 'legal_representative', n: 'Representante Legal RFB', d: 'Representantes.', q: 'doc{11222333000181}' },
+  { g: 'ondemand', s: 'Consultas de Empresas', k: 'cnpj_situation', n: 'Situação CNPJ', d: 'Situação cadastral.', q: 'doc{11222333000181}' },
+  { g: 'ondemand', s: 'Consultas de Empresas', k: 'sintegra', n: 'SINTEGRA', d: 'Inscrição estadual.', q: 'doc{11222333000181}' },
+  // ONDEMAND | Consultas de Pessoas
+  { g: 'ondemand', s: 'Consultas de Pessoas', k: 'bacen_sanctions', n: 'BACEN Sanções', d: 'Sanções do BCB.', q: 'doc{12345678909}' },
+  { g: 'ondemand', s: 'Consultas de Pessoas', k: 'person_cadin_debts', n: 'CADIN Débitos (Pessoa)', d: 'Registro CADIN.', q: 'doc{12345678909}' },
+  { g: 'ondemand', s: 'Consultas de Pessoas', k: 'person_comprot_processes', n: 'COMPROT Processos (Pessoa)', d: 'Processos.', q: 'doc{12345678909}' },
+  { g: 'ondemand', s: 'Consultas de Pessoas', k: 'detran_traffic_fines', n: 'DETRAN Multas', d: 'Infrações de trânsito.', q: 'doc{12345678909}' },
+  { g: 'ondemand', s: 'Consultas de Pessoas', k: 'cpf_status', n: 'Status do CPF', d: 'Situação do CPF na RFB.', q: 'doc{12345678909}' },
+  { g: 'ondemand', s: 'Consultas de Pessoas', k: 'person_sintegra', n: 'SINTEGRA (Pessoa)', d: 'Inscrição estadual.', q: 'doc{12345678909}' },
+  { g: 'ondemand', s: 'Consultas de Pessoas', k: 'sus_card', n: 'SUS Cartão', d: 'Número do cartão SUS.', q: 'doc{12345678909}' },
+  { g: 'ondemand', s: 'Consultas de Pessoas', k: 'tse_voting_location', n: 'TSE Local de Votação', d: 'Local de votação.', q: 'doc{12345678909}' },
+  // ONDEMAND | Notas Fiscais
+  { g: 'ondemand', s: 'Consultas de Notas Fiscais', k: 'cte', n: 'CTe', d: 'Conhecimento de Transporte.', q: 'cte_key{CHAVE}' },
+  { g: 'ondemand', s: 'Consultas de Notas Fiscais', k: 'nfe', n: 'NFe', d: 'Nota Fiscal Eletrônica.', q: 'nfe_key{CHAVE}' },
+  // ONDEMAND | Veículos
+  { g: 'ondemand', s: 'Consultas de Veículos', k: 'detran_chassis_renavam', n: 'Chassi e Renavam', d: 'Dados do veículo.', q: 'plate{ABC1234}' },
+  { g: 'ondemand', s: 'Consultas de Veículos', k: 'rntrc_transporters', n: 'RNTRC Transportadores', d: 'Registro de transportadores.', q: 'plate{ABC1234}' },
+  // MARKETPLACE
+  { g: 'marketplace', s: 'Crédito - Empresas', k: 'scr_positive_score', n: 'SCR Score Positivo', d: 'Sistema de Informações de Crédito do BCB.', q: 'doc{11222333000181}' },
+  { g: 'marketplace', s: 'Crédito - Empresas', k: 'bureau_restrictive_data', n: 'Dados Restritivos (Birô)', d: 'Cadastral + negativos + score.', q: 'doc{11222333000181}' },
+  { g: 'marketplace', s: 'Crédito - Empresas', k: 'quod_restrictive_data', n: 'Dados Restritivos (Quod)', d: 'Sinais de risco.', q: 'doc{11222333000181}' },
+  { g: 'marketplace', s: 'Crédito - Empresas', k: 'quod_negative_flags', n: 'Flags Negativos (Quod)', d: 'Marcadores negativos.', q: 'doc{11222333000181}' },
+  { g: 'marketplace', s: 'Crédito - Empresas', k: 'multidata_credit_score', n: 'Score Multidados (Birô)', d: 'Score consolidado.', q: 'doc{11222333000181}' },
+  { g: 'marketplace', s: 'Crédito - Empresas', k: 'murabei_credit_score', n: 'Score Murabei', d: 'Score 0-1000.', q: 'doc{11222333000181}' },
+  { g: 'marketplace', s: 'Crédito - Empresas', k: 'quantum_credit_score', n: 'Score Quantum', d: 'Score 0-999.', q: 'doc{11222333000181}' },
+  { g: 'marketplace', s: 'Crédito - Empresas', k: 'quod_credit_score', n: 'Score Quod', d: 'Score 300-1000.', q: 'doc{11222333000181}' },
+  { g: 'marketplace', s: 'Crédito - Pessoas', k: 'b2e_risk_classification', n: 'Classificação de Risco (B2E)', d: 'Risco de fraude.', q: 'doc{12345678909}' },
+  { g: 'marketplace', s: 'Crédito - Pessoas', k: 'person_scr_positive_score', n: 'SCR Score Positivo (Pessoa)', d: 'SCR do BCB.', q: 'doc{12345678909}' },
+  { g: 'marketplace', s: 'Crédito - Pessoas', k: 'person_bureau_restrictive', n: 'Dados Restritivos Birô (Pessoa)', d: 'Restritivos + score.', q: 'doc{12345678909}' },
+  { g: 'marketplace', s: 'Crédito - Pessoas', k: 'person_quod_restrictive', n: 'Dados Restritivos Quod (Pessoa)', d: 'Risco de crédito.', q: 'doc{12345678909}' },
+  { g: 'marketplace', s: 'Crédito - Pessoas', k: 'person_quod_negative_flags', n: 'Flags Negativos Quod (Pessoa)', d: 'Eventos negativos.', q: 'doc{12345678909}' },
+  { g: 'marketplace', s: 'Crédito - Pessoas', k: 'person_multidata_score', n: 'Score Multidados (Pessoa)', d: 'Score consolidado.', q: 'doc{12345678909}' },
+  { g: 'marketplace', s: 'Crédito - Pessoas', k: 'person_quantum_score', n: 'Score Quantum (Pessoa)', d: 'Score de inadimplência.', q: 'doc{12345678909}' },
+  { g: 'marketplace', s: 'Crédito - Pessoas', k: 'person_quod_score', n: 'Score Quod (Pessoa)', d: 'Score + capacidade.', q: 'doc{12345678909}' },
+  { g: 'marketplace', s: 'Crédito - Pessoas', k: 'quantum_revolving_score', n: 'Score Rotativo Quantum', d: 'Risco de crédito rotativo.', q: 'doc{12345678909}' },
+  { g: 'marketplace', s: 'Empresas', k: 'shareholding_percentage', n: 'Percentual Societário', d: 'Participação por sócio.', q: 'doc{11222333000181}' },
+  { g: 'marketplace', s: 'Empresas', k: 'ubo_final_beneficiaries', n: 'UBO (Beneficiários Finais)', d: 'Beneficiários com >20%.', q: 'doc{11222333000181}' },
+  { g: 'marketplace', s: 'Endereços', k: 'fuel_prices_region', n: 'Preços de Combustível (Triad)', d: 'Preços na região.', q: 'latlong{-23.5505,-46.6333}' },
+  { g: 'marketplace', s: 'Endereços', k: 'property_qualification', n: 'Qualificação do Imóvel', d: 'Atributos do imóvel.', q: 'cep{01310100}' },
+  { g: 'marketplace', s: 'Telefones', k: 'device_cadaster_telesign', n: 'Dados de Aparelho (Telesign)', d: 'Tipo, operadora.', q: 'phone{5511999999999}' },
+  { g: 'marketplace', s: 'Telefones', k: 'portability_history_telesign', n: 'Portabilidade (Telesign)', d: 'Histórico de portabilidade.', q: 'phone{5511999999999}' },
+  { g: 'marketplace', s: 'Telefones', k: 'quality_score_blu365', n: 'Score de Qualidade (BLU365)', d: 'Probabilidade de entrega.', q: 'phone{5511999999999}' },
+  { g: 'marketplace', s: 'Telefones', k: 'risk_score_telesign', n: 'Score de Risco (Telesign)', d: 'Risco do telefone.', q: 'phone{5511999999999}' },
+  { g: 'marketplace', s: 'Telefones', k: 'sms_delivery_status_blu365', n: 'Status de Entrega SMS (BLU365)', d: 'Status da última tentativa.', q: 'phone{5511999999999}' },
+  { g: 'marketplace', s: 'Telefones', k: 'portability_status_telesign', n: 'Status de Portabilidade (Telesign)', d: 'Operadora atual.', q: 'phone{5511999999999}' },
+  { g: 'marketplace', s: 'Telefones', k: 'subscriber_status_telesign', n: 'Status do Assinante (Telesign)', d: 'Plano, status, tempo.', q: 'phone{5511999999999}' },
+  { g: 'marketplace', s: 'IP', k: 'ip_risk_data', n: 'Dados de Risco do IP', d: 'Geolocalização, proxy, VPN.', q: 'ip{200.150.100.50}' },
+  // MODELAGEM
+  { g: 'modelagem', s: 'Pessoas', k: 'unified_modeling_x1_0_person', n: 'Modelagem x1.0 (Pessoa)', d: 'Atributos essenciais.', q: 'doc{12345678909}' },
+  { g: 'modelagem', s: 'Pessoas', k: 'unified_modeling_x1_5_person', n: 'Modelagem x1.5 (Pessoa)', d: 'Atributos expandidos.', q: 'doc{12345678909}' },
+  { g: 'modelagem', s: 'Empresas', k: 'unified_modeling_x1_0_company', n: 'Modelagem x1.0 (Empresa)', d: 'Variáveis consolidadas.', q: 'doc{11222333000181}' },
+  { g: 'modelagem', s: 'Empresas', k: 'unified_modeling_x1_5_company', n: 'Modelagem x1.5 (Empresa)', d: 'Dataset expandido.', q: 'doc{11222333000181}' },
+]
+
+function queryLabel(q) {
+  if (q.startsWith('doc{')) {
+    const inner = q.slice(4, -1)
+    if (inner.length >= 14 || inner.startsWith('11222')) return 'CNPJ da empresa (apenas números)'
+    return 'CPF da pessoa (apenas números)'
+  }
+  if (q.startsWith('plate{')) return 'Placa do veículo (formato antigo, ex: ABC1234)'
+  if (q.startsWith('cep{')) return 'CEP (apenas números, ex: 01310100)'
+  if (q.startsWith('phone{')) return 'Telefone com DDI (ex: 5511999999999)'
+  if (q.startsWith('ip{')) return 'Endereço IP (ex: 200.150.100.50)'
+  if (q.startsWith('latlong{')) return 'Coordenadas geográficas (ex: -23.5505,-46.6333)'
+  if (q.startsWith('url{')) return 'URL completa do produto'
+  if (q.startsWith('process_number{')) return 'Número do processo (ex: 08700.123456/2024-01)'
+  if (q.startsWith('nfe_key{')) return 'Chave de acesso da NFe (44 dígitos)'
+  if (q.startsWith('cte_key{')) return 'Chave de acesso do CTe'
+  if (q.startsWith('car{')) return 'Código CAR do imóvel rural'
+  if (q.startsWith('name{')) return 'Nome da pessoa ou empresa'
+  if (q.startsWith('email{')) return 'E-mail'
+  if (q.startsWith('id{')) return 'Identificador do produto'
+  if (q.startsWith('polygon{')) return 'Polígono geográfico'
+  return q
+}
+
+function generate() {
+  const spec = JSON.parse(JSON.stringify(baseSpec))
+  const tagSet = new Set()
+
+  for (const ag of apiGroups) {
+    const groupData = ag
+    spec['x-tagGroups'].push({ name: groupData.name, tags: groupData.subgroups })
   }
 
-  return {
-    [path]: {
+  for (const ds of datasets) {
+    if (!tagSet.has(ds.s)) {
+      tagSet.add(ds.s)
+      spec.tags.push({ name: ds.s, description: `${ds.s} — ${apiGroups.find(g => g.key === ds.g)?.name || ds.g}` })
+    }
+
+    const label = queryLabel(ds.q)
+    const path = `/api/consultas/${ds.g}/${ds.k}`
+
+    spec.paths[path] = {
       post: {
-        tags: [g.tag],
-        summary: ds.name,
-        description: ds.desc + `\n\n**Chave de busca:** \`${ds.query}\``,
-        operationId: `${group}_${ds.key}`,
-        parameters: [
-          { name: 'q', in: 'query', required: true, schema: { type: 'string' }, description: 'Chave de busca', example: ds.query }
-        ],
+        tags: [ds.s],
+        summary: ds.n,
+        description: ds.d + `\n\n**Chave de busca:** \`${ds.q}\` — ${label}`,
+        operationId: `${ds.g}_${ds.k}`,
+        parameters: [],
         requestBody: {
           required: true,
           content: {
@@ -297,37 +343,27 @@ function makePath(group, ds) {
                 type: 'object',
                 required: ['q'],
                 properties: {
-                  q: { type: 'string', description: 'Chave de busca. Formatos: doc{CPF}, doc{CNPJ}, plate{PLACA}, cep{CEP}, phone{TELEFONE}, name{NOME}, email{EMAIL}, url{URL}, ip{IP}, latlong{LAT,LNG}, process_number{NR}, nfe_key{CHAVE}, cte_key{CHAVE}, car{CAR_ID}', example: ds.query },
+                  q: { type: 'string', description: label, example: ds.q },
                   limit: { type: 'integer', description: 'Máximo de resultados (1-80, padrão 10)', default: 10 }
                 }
               },
-              example: { q: ds.query, limit: 10 }
+              example: { q: ds.q, limit: 10 }
             }
           }
         },
-        responses
+        responses: {
+          '200': { description: 'Consulta realizada com sucesso', content: { 'application/json': { schema: { $ref: '#/components/schemas/QueryResponse' } } } },
+          '400': { description: 'Requisição inválida' },
+          '401': { description: 'Token ausente ou inválido' },
+          '402': { description: 'Saldo insuficiente', content: { 'application/json': { schema: { $ref: '#/components/schemas/InsufficientCredits' } } } }
+        }
       }
     }
-  }
-}
-
-function generate() {
-  const usedTags = new Set()
-  const spec = JSON.parse(JSON.stringify(baseSpec))
-
-  for (const ds of datasets) {
-    if (!usedTags.has(ds.group)) {
-      usedTags.add(ds.group)
-      const g = groups[ds.group]
-      spec.tags.push({ name: g.tag, description: g.description })
-    }
-    Object.assign(spec.paths, makePath(ds.group, ds))
   }
 
   const outPath = path.join(__dirname, '..', 'public', 'specs', 'consultas.json')
   fs.writeFileSync(outPath, JSON.stringify(spec, null, 2))
-  console.log(`Generated spec with ${Object.keys(spec.paths).length} dataset paths`)
-  console.log(`Written to ${outPath}`)
+  console.log(`Generated spec: ${Object.keys(spec.paths).length} dataset paths, ${spec.tags.length} subgroups, ${spec['x-tagGroups'].length} API groups`)
 }
 
 generate()

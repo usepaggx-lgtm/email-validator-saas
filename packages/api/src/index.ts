@@ -1843,8 +1843,18 @@ app.post('/api/consultas/:group/:dataset', async (c) => {
   const accessToken = await c.env.EV_KV.get('cred:consultas_access_token')
   const tokenId = await c.env.EV_KV.get('cred:consultas_token_id')
   if (!accessToken || !tokenId) return c.json({ error: 'Serviço não configurado' }, 500)
-  const { q, limit } = await c.req.json() as any
+  let { q, limit } = await c.req.json() as any
   if (!q) return c.json({ error: 'q (query) is required' }, 400)
+  const rawQ = String(q).trim()
+  if (!rawQ.includes('{')) {
+    const digits = rawQ.replace(/\D/g, '')
+    if (digits.length === 11 || digits.length === 14) q = `doc{${digits}}`
+    else if (/^[A-Z]{3}\d/.test(rawQ.toUpperCase())) q = `plate{${rawQ.toUpperCase()}}`
+    else if (/^\d{8}$/.test(digits)) q = `cep{${digits}}`
+    else if (/^\d{10,15}$/.test(digits)) q = `phone{${digits}}`
+    else if (rawQ.includes('.')) q = `name{${rawQ}}`
+    else q = `doc{${rawQ}}`
+  }
   const start = Date.now()
   try {
     const res = await fetch(`${PLATFORM_BASE}${endpoint}`, {
@@ -1871,8 +1881,18 @@ app.post('/api/consultas/:group', async (c) => {
   const group = c.req.param('group')
   const endpoint = BDC_GROUP_ENDPOINTS[group]
   if (!endpoint) return c.json({ error: 'Invalid API group' }, 400)
-  const { q, dataset, limit } = await c.req.json() as any
+  let { q, dataset, limit } = await c.req.json() as any
   if (!q || !dataset) return c.json({ error: 'q (query) and dataset are required' }, 400)
+  const rawQ = String(q).trim()
+  if (!rawQ.includes('{')) {
+    const digits = rawQ.replace(/\D/g, '')
+    if (digits.length === 11 || digits.length === 14) q = `doc{${digits}}`
+    else if (/^[A-Z]{3}\d/.test(rawQ.toUpperCase())) q = `plate{${rawQ.toUpperCase()}}`
+    else if (/^\d{8}$/.test(digits)) q = `cep{${digits}}`
+    else if (/^\d{10,15}$/.test(digits)) q = `phone{${digits}}`
+    else if (rawQ.includes('.')) q = `name{${rawQ}}`
+    else q = `doc{${rawQ}}`
+  }
   const pricing = await c.env.DB.prepare('SELECT credit_cost FROM product_pricing WHERE product = \'consultas\' AND api_group = ? AND dataset_key = ? AND is_active = 1').bind(group, dataset).first() as any
   if (!pricing) return c.json({ error: 'Invalid or inactive dataset' }, 400)
   const creditCost = pricing.credit_cost

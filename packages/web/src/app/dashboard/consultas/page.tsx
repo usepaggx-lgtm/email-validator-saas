@@ -35,7 +35,7 @@ export default function ConsultasPage() {
     if (!getUser()) { router.push('/login'); return }
     Promise.all([
       authFetch('/api/credits/balance').then(d => setBalanceCents(d.balance_cents ?? 0)).catch(() => {}),
-      authFetch('/api/bigdatacorp/pricing').then(d => {
+      authFetch('/api/consultas/pricing').then(d => {
         if (d.groups) {
           setGroups(d.groups)
           const keys = Object.keys(d.groups)
@@ -71,7 +71,7 @@ export default function ConsultasPage() {
     setError('')
     const startTime = Date.now()
     try {
-      const d = await authFetch(`/api/bigdatacorp/${selectedGroup}/${selectedDataset}`, {
+      const d = await authFetch(`/api/consultas/${selectedGroup}/${selectedDataset}`, {
         method: 'POST',
         body: JSON.stringify({ q: query.trim() }),
       })
