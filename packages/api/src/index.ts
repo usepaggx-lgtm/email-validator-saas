@@ -1828,6 +1828,43 @@ const BDC_GROUP_ENDPOINTS: Record<string, string> = {
   ondemand: '/ondemand', marketplace: '/marketplace', modelagem: '/modelagem',
 }
 
+app.post('/api/bigdatacorp/:group/:dataset', async (c) => {
+  const user = await getUserFromToken(c)
+  if (!user) return c.json({ error: 'Unauthorized' }, 401)
+  const group = c.req.param('group')
+  const dataset = c.req.param('dataset')
+  const endpoint = BDC_GROUP_ENDPOINTS[group]
+  if (!endpoint) return c.json({ error: 'Invalid API group' }, 400)
+  const pricing = await c.env.DB.prepare('SELECT credit_cost FROM product_pricing WHERE product = \'consultas\' AND api_group = ? AND dataset_key = ? AND is_active = 1').bind(group, dataset).first() as any
+  if (!pricing) return c.json({ error: 'Invalid or inactive dataset' }, 400)
+  const creditCost = pricing.credit_cost
+  const balance = await getCredits(user.id, c.env.DB)
+  if (balance < creditCost) return c.json({ error: 'Saldo insuficiente', required_cents: creditCost, balance_cents: balance }, 402)
+  const accessToken = await c.env.EV_KV.get('cred:bdc_access_token')
+  const tokenId = await c.env.EV_KV.get('cred:bdc_token_id')
+  if (!accessToken || !tokenId) return c.json({ error: 'BigDataCorp not configured' }, 500)
+  const { q, limit } = await c.req.json() as any
+  if (!q) return c.json({ error: 'q (query) is required' }, 400)
+  const start = Date.now()
+  try {
+    const res = await fetch(`${BIGDATACORP_BASE}${endpoint}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', AccessToken: accessToken, TokenId: tokenId, Accept: 'application/json' },
+      body: JSON.stringify({ q, Datasets: dataset, Limit: limit || 10 }),
+    })
+    const elapsed = Date.now() - start
+    const data = await res.json()
+    const bdcQueryId = data.QueryId || ''
+    const status = res.ok ? 'success' : 'error'
+    await deductCredits(user.id, creditCost, c.env.DB, `Consulta ${dataset} (${group})`, 'bigdatacorp', bdcQueryId)
+    await c.env.DB.prepare('INSERT INTO consultas_queries (user_id, api_group, dataset, query_text, credit_cost, response_status, bigdatacorp_query_id, elapsed_ms, response_preview) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)').bind(user.id, group, dataset, q, creditCost, status, bdcQueryId, elapsed, JSON.stringify(data).slice(0, 500)).run()
+    return c.json({ ...data, _meta: { balance_cents: await getCredits(user.id, c.env.DB), cost_cents: creditCost, elapsed_ms: elapsed } })
+  } catch (e: any) {
+    await c.env.DB.prepare('INSERT INTO consultas_queries (user_id, api_group, dataset, query_text, credit_cost, response_status, elapsed_ms) VALUES (?, ?, ?, ?, ?, ?, ?)').bind(user.id, group, dataset, q, creditCost, 'error', Date.now() - start).run()
+    return c.json({ error: 'BigDataCorp request failed', detail: e.message }, 502)
+  }
+})
+
 app.post('/api/bigdatacorp/:group', async (c) => {
   const user = await getUserFromToken(c)
   if (!user) return c.json({ error: 'Unauthorized' }, 401)

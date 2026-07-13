@@ -71,9 +71,9 @@ export default function ConsultasPage() {
     setError('')
     const startTime = Date.now()
     try {
-      const d = await authFetch(`/api/bigdatacorp/${selectedGroup}`, {
+      const d = await authFetch(`/api/bigdatacorp/${selectedGroup}/${selectedDataset}`, {
         method: 'POST',
-        body: JSON.stringify({ q: query.trim(), dataset: selectedDataset }),
+        body: JSON.stringify({ q: query.trim() }),
       })
       if (d.error) { setError(d.error); return }
       setResult({ ...d, _elapsed: Date.now() - startTime })
