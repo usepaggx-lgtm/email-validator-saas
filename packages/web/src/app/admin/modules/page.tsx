@@ -8,6 +8,7 @@ const MODULE_LABELS: Record<string, string> = {
   validate: 'Validate', lists: 'Lists', finder: 'Email Finder',
   enricher: 'Email Enricher', history: 'History', api_keys: 'API Keys', billing: 'Billing',
   whatsapp: 'WhatsApp',
+  consultas: 'Consultas',
 }
 
 export default function AdminModulesPage() {

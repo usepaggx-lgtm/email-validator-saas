@@ -40,6 +40,8 @@ export default function AdminCredentialsPage() {
     stripe_webhook_secret: 'Stripe Webhook Secret',
     smtp_verifier: 'SMTP Verifier URL',
     crawler_url: 'Crawler URL',
+    bdc_access_token: 'BigDataCorp Access Token',
+    bdc_token_id: 'BigDataCorp Token ID',
   }
 
   if (loading) return <div className="flex items-center justify-center py-20"><Loader2 size={24} className="animate-spin text-purple-600" /></div>
@@ -96,6 +98,8 @@ export default function AdminCredentialsPage() {
               <option value="stripe_webhook_secret">Stripe Webhook Secret</option>
               <option value="smtp_verifier">SMTP Verifier URL</option>
               <option value="crawler_url">Crawler URL</option>
+              <option value="bdc_access_token">BigDataCorp Access Token</option>
+              <option value="bdc_token_id">BigDataCorp Token ID</option>
             </select>
           </div>
           <div>

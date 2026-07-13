@@ -1320,7 +1320,7 @@ app.get('/api/admin/finances/summary', async (c) => {
   })
 })
 
-const MODULES = ['validate', 'lists', 'finder', 'enricher', 'history', 'api_keys', 'billing', 'whatsapp']
+const MODULES = ['validate', 'lists', 'finder', 'enricher', 'history', 'api_keys', 'billing', 'whatsapp', 'consultas']
 
 app.get('/api/modules', async (c) => {
   const user = await getUserFromToken(c)
@@ -1471,7 +1471,7 @@ app.post('/api/admin/plans/sync-stripe', async (c) => {
 app.get('/api/admin/credentials', async (c) => {
   const user = await getUserFromToken(c)
   if (!user || !user.is_admin) return c.json({ error: 'Forbidden' }, 403)
-  const keys = ['stripe_secret_key', 'stripe_publishable_key', 'stripe_webhook_secret', 'smtp_verifier', 'crawler_url']
+  const keys = ['stripe_secret_key', 'stripe_publishable_key', 'stripe_webhook_secret', 'smtp_verifier', 'crawler_url', 'bdc_access_token', 'bdc_token_id']
   const result: any[] = []
   for (const key of keys) {
     const val = await c.env.EV_KV.get(`cred:${key}`)
@@ -1727,6 +1727,204 @@ app.post('/api/affiliate/track-ref', async (c) => {
 })
 
 app.get('/api/health', (c) => c.json({ status: 'ok', timestamp: Date.now() }))
+
+const BIGDATACORP_BASE = 'https://plataforma.bigdatacorp.com.br'
+
+async function getCredits(userId: string, db: D1Database): Promise<number> {
+  const row = await db.prepare('SELECT balance FROM credit_balance WHERE user_id = ?').bind(userId).first() as any
+  return row?.balance || 0
+}
+
+async function deductCredits(userId: string, amount: number, db: D1Database, description: string, refType: string = '', refId: string = '') {
+  const balance = await getCredits(userId, db)
+  if (balance < amount) throw new Error('Insufficient credits')
+  const newBalance = balance - amount
+  await db.prepare('INSERT INTO credit_balance (user_id, balance, updated_at) VALUES (?, ?, datetime(\'now\')) ON CONFLICT(user_id) DO UPDATE SET balance = ?, updated_at = datetime(\'now\')').bind(userId, newBalance, newBalance).run()
+  await db.prepare('INSERT INTO credit_transactions (user_id, type, amount, balance_after, description, reference_type, reference_id) VALUES (?, ?, ?, ?, ?, ?, ?)').bind(userId, 'deduction', -amount, newBalance, description, refType, refId).run()
+  return newBalance
+}
+
+async function addCredits(userId: string, amount: number, db: D1Database, type: string, description: string, refType: string = '', refId: string = '') {
+  const balance = await getCredits(userId, db)
+  const newBalance = balance + amount
+  await db.prepare('INSERT INTO credit_balance (user_id, balance, updated_at) VALUES (?, ?, datetime(\'now\')) ON CONFLICT(user_id) DO UPDATE SET balance = ?, updated_at = datetime(\'now\')').bind(userId, newBalance, newBalance).run()
+  await db.prepare('INSERT INTO credit_transactions (user_id, type, amount, balance_after, description, reference_type, reference_id) VALUES (?, ?, ?, ?, ?, ?, ?)').bind(userId, type, amount, newBalance, description, refType, refId).run()
+  return newBalance
+}
+
+app.get('/api/credits/balance', async (c) => {
+  const user = await getUserFromToken(c)
+  if (!user) return c.json({ error: 'Unauthorized' }, 401)
+  const balance = await getCredits(user.id, c.env.DB)
+  return c.json({ balance })
+})
+
+app.get('/api/credits/transactions', async (c) => {
+  const user = await getUserFromToken(c)
+  if (!user) return c.json({ error: 'Unauthorized' }, 401)
+  const page = parseInt(c.req.query('page') || '1')
+  const limit = 20
+  const offset = (page - 1) * limit
+  const rows = await c.env.DB.prepare('SELECT * FROM credit_transactions WHERE user_id = ? ORDER BY created_at DESC LIMIT ? OFFSET ?').bind(user.id, limit, offset).all()
+  const total = await c.env.DB.prepare('SELECT COUNT(*) as c FROM credit_transactions WHERE user_id = ?').bind(user.id).first() as any
+  return c.json({ transactions: rows.results, total: total?.c || 0, page, limit })
+})
+
+app.post('/api/credits/purchase', async (c) => {
+  const user = await getUserFromToken(c)
+  if (!user) return c.json({ error: 'Unauthorized' }, 401)
+  const { amount } = await c.req.json() as any
+  if (!amount || amount < 1000 || amount > 100000) return c.json({ error: 'Amount must be between R$10 and R$1,000' }, 400)
+  const sk = await c.env.EV_KV.get('cred:stripe_secret_key')
+  if (!sk) return c.json({ error: 'Payment not configured' }, 400)
+  const stripe = require('stripe')(sk)
+  const session = await stripe.checkout.sessions.create({
+    payment_method_types: ['card'],
+    line_items: [{ price_data: { currency: 'brl', product_data: { name: 'Créditos - Consultas', description: `${amount} créditos = R$ ${(amount / 100).toFixed(2)}` }, unit_amount: amount }, quantity: 1 }],
+    mode: 'payment',
+    success_url: `${c.env.BASE_URL || 'https://email-validator-1ge.pages.dev'}/dashboard/credits?success=true`,
+    cancel_url: `${c.env.BASE_URL || 'https://email-validator-1ge.pages.dev'}/dashboard/credits?canceled=true`,
+    metadata: { user_id: user.id, credit_amount: String(amount) },
+  })
+  return c.json({ url: session.url })
+})
+
+app.post('/api/stripe/credits-webhook', async (c) => {
+  const sk = await c.env.EV_KV.get('cred:stripe_secret_key')
+  if (!sk) return c.json({ error: 'Not configured' }, 400)
+  const whSecret = await c.env.EV_KV.get('cred:stripe_webhook_secret')
+  const stripe = require('stripe')(sk)
+  let event: any
+  try {
+    const raw = await c.req.text()
+    const sig = c.req.header('stripe-signature') || ''
+    event = whSecret ? stripe.webhooks.constructEvent(raw, sig, whSecret) : JSON.parse(raw)
+  } catch { return c.json({ error: 'Invalid signature' }, 400) }
+
+  if (event.type === 'checkout.session.completed') {
+    const session = event.data.object
+    const { user_id, credit_amount } = session.metadata || {}
+    if (user_id && credit_amount) {
+      await addCredits(user_id, parseInt(credit_amount), c.env.DB, 'purchase', `Compra de ${parseInt(credit_amount)} créditos`, 'stripe', session.id)
+    }
+  }
+  return c.json({ received: true })
+})
+
+app.get('/api/bigdatacorp/pricing', async (c) => {
+  const user = await getUserFromToken(c)
+  if (!user) return c.json({ error: 'Unauthorized' }, 401)
+  const groups = await c.env.DB.prepare('SELECT DISTINCT api_group FROM product_pricing WHERE product = \'consultas\' AND is_active = 1 ORDER BY api_group').all()
+  const result: any = {}
+  for (const g of (groups.results || [])) {
+    result[g.api_group] = await c.env.DB.prepare('SELECT dataset_key, dataset_name, credit_cost FROM product_pricing WHERE product = \'consultas\' AND api_group = ? AND is_active = 1 ORDER BY dataset_name').bind(g.api_group).all()
+  }
+  return c.json({ groups: result })
+})
+
+const BDC_GROUP_ENDPOINTS: Record<string, string> = {
+  pessoas: '/pessoas', empresas: '/empresas', produtos: '/produtos',
+  enderecos: '/enderecos', processos: '/processos', veiculos: '/veiculos',
+  ondemand: '/ondemand', marketplace: '/marketplace', modelagem: '/modelagem',
+}
+
+app.post('/api/bigdatacorp/:group', async (c) => {
+  const user = await getUserFromToken(c)
+  if (!user) return c.json({ error: 'Unauthorized' }, 401)
+  const group = c.req.param('group')
+  const endpoint = BDC_GROUP_ENDPOINTS[group]
+  if (!endpoint) return c.json({ error: 'Invalid API group' }, 400)
+
+  const { q, dataset, limit } = await c.req.json() as any
+  if (!q || !dataset) return c.json({ error: 'q (query) and dataset are required' }, 400)
+
+  const pricing = await c.env.DB.prepare('SELECT credit_cost FROM product_pricing WHERE product = \'consultas\' AND api_group = ? AND dataset_key = ? AND is_active = 1').bind(group, dataset).first() as any
+  if (!pricing) return c.json({ error: 'Invalid or inactive dataset' }, 400)
+
+  const creditCost = pricing.credit_cost
+  const balance = await getCredits(user.id, c.env.DB)
+  if (balance < creditCost) return c.json({ error: 'Insufficient credits', required: creditCost, balance }, 402)
+
+  const accessToken = await c.env.EV_KV.get('cred:bdc_access_token')
+  const tokenId = await c.env.EV_KV.get('cred:bdc_token_id')
+  if (!accessToken || !tokenId) return c.json({ error: 'BigDataCorp not configured' }, 500)
+
+  const start = Date.now()
+  try {
+    const res = await fetch(`${BIGDATACORP_BASE}${endpoint}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', AccessToken: accessToken, TokenId: tokenId, Accept: 'application/json' },
+      body: JSON.stringify({ q, Datasets: dataset, Limit: limit || 10 }),
+    })
+    const elapsed = Date.now() - start
+    const data = await res.json()
+
+    const bdcQueryId = data.QueryId || ''
+    const status = res.ok ? 'success' : 'error'
+
+    await deductCredits(user.id, creditCost, c.env.DB, `Consulta ${dataset} (${group})`, 'bigdatacorp', bdcQueryId)
+    await c.env.DB.prepare('INSERT INTO consultas_queries (user_id, api_group, dataset, query_text, credit_cost, response_status, bigdatacorp_query_id, elapsed_ms, response_preview) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)').bind(user.id, group, dataset, q, creditCost, status, bdcQueryId, elapsed, JSON.stringify(data).slice(0, 500)).run()
+
+    return c.json({ ...data, _meta: { balance: await getCredits(user.id, c.env.DB), credit_cost: creditCost, elapsed_ms: elapsed } })
+  } catch (e: any) {
+    await c.env.DB.prepare('INSERT INTO consultas_queries (user_id, api_group, dataset, query_text, credit_cost, response_status, elapsed_ms) VALUES (?, ?, ?, ?, ?, ?, ?)').bind(user.id, group, dataset, q, creditCost, 'error', Date.now() - start).run()
+    return c.json({ error: 'BigDataCorp request failed', detail: e.message }, 502)
+  }
+})
+
+app.get('/api/consultas/history', async (c) => {
+  const user = await getUserFromToken(c)
+  if (!user) return c.json({ error: 'Unauthorized' }, 401)
+  const page = parseInt(c.req.query('page') || '1')
+  const limit = 20
+  const offset = (page - 1) * limit
+  const rows = await c.env.DB.prepare('SELECT * FROM consultas_queries WHERE user_id = ? ORDER BY created_at DESC LIMIT ? OFFSET ?').bind(user.id, limit, offset).all()
+  const total = await c.env.DB.prepare('SELECT COUNT(*) as c FROM consultas_queries WHERE user_id = ?').bind(user.id).first() as any
+  return c.json({ history: rows.results, total: total?.c || 0, page, limit })
+})
+
+app.post('/api/admin/credits/manual', async (c) => {
+  const admin = await getUserFromToken(c)
+  if (!admin || !admin.is_admin) return c.json({ error: 'Forbidden' }, 403)
+  const { user_id, amount, description } = await c.req.json() as any
+  if (!user_id || !amount) return c.json({ error: 'user_id and amount required' }, 400)
+  const type = amount > 0 ? 'admin_adjust' : 'refund'
+  await addCredits(user_id, amount, c.env.DB, type, description || `Admin adjustment: ${amount}`, 'admin', admin.id)
+  return c.json({ success: true, balance: await getCredits(user_id, c.env.DB) })
+})
+
+app.get('/api/admin/credits/users', async (c) => {
+  const admin = await getUserFromToken(c)
+  if (!admin || !admin.is_admin) return c.json({ error: 'Forbidden' }, 403)
+  const search = c.req.query('search') || ''
+  const rows = await c.env.DB.prepare(`SELECT u.id, u.email, u.name, COALESCE(cb.balance, 0) as balance FROM users u LEFT JOIN credit_balance cb ON u.id = cb.user_id WHERE u.email LIKE ? OR u.name LIKE ? ORDER BY cb.balance DESC LIMIT 100`).bind(`%${search}%`, `%${search}%`).all()
+  return c.json({ users: rows.results })
+})
+
+app.get('/api/admin/bigdatacorp/pricing', async (c) => {
+  const admin = await getUserFromToken(c)
+  if (!admin || !admin.is_admin) return c.json({ error: 'Forbidden' }, 403)
+  const group = c.req.query('group') || ''
+  const q = group ? `SELECT * FROM product_pricing WHERE product = 'consultas' AND api_group = ? ORDER BY dataset_name` : `SELECT * FROM product_pricing WHERE product = 'consultas' ORDER BY api_group, dataset_name`
+  const rows = group ? await c.env.DB.prepare(q).bind(group).all() : await c.env.DB.prepare(q).all()
+  return c.json({ pricing: rows.results })
+})
+
+app.put('/api/admin/bigdatacorp/pricing/:id', async (c) => {
+  const admin = await getUserFromToken(c)
+  if (!admin || !admin.is_admin) return c.json({ error: 'Forbidden' }, 403)
+  const id = c.req.param('id')
+  const { credit_cost, is_active } = await c.req.json() as any
+  if (credit_cost !== undefined && (credit_cost < 1 || credit_cost > 100000)) return c.json({ error: 'Invalid credit cost' }, 400)
+  const updates: string[] = []
+  const vals: any[] = []
+  if (credit_cost !== undefined) { updates.push('credit_cost = ?'); vals.push(credit_cost) }
+  if (is_active !== undefined) { updates.push('is_active = ?'); vals.push(is_active ? 1 : 0) }
+  if (updates.length === 0) return c.json({ error: 'Nothing to update' }, 400)
+  updates.push("updated_at = datetime('now')")
+  await c.env.DB.prepare(`UPDATE product_pricing SET ${updates.join(', ')} WHERE id = ?`).bind(...vals, id).run()
+  return c.json({ success: true })
+})
 
 async function proxyWhatsapp(c: any, path: string, method: string = 'GET') {
   try {

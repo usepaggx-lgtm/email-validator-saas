@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
-import { Mail, Activity, Key, CreditCard, BarChart3, LogOut, Sparkles, Loader2, List, Bell, User, Settings, Camera, Search, UserPlus, Shield, Gift, MessageCircle } from 'lucide-react'
+import { Mail, Activity, Key, CreditCard, BarChart3, LogOut, Sparkles, Loader2, List, Bell, User, Settings, Camera, Search, UserPlus, Shield, Gift, MessageCircle, Database, Coins } from 'lucide-react'
 import { getUser, clearToken, authFetch } from '@/lib/utils'
 
 const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8787'
@@ -21,11 +21,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { label: 'Lists', icon: List, href: '/dashboard/lists', key: 'lists' },
     { label: 'Email Finder', icon: Search, href: '/dashboard/finder', key: 'finder' },
     { label: 'Email Enricher', icon: UserPlus, href: '/dashboard/enricher', key: 'enricher' },
+    { label: 'Consultas', icon: Database, href: '/dashboard/consultas', key: 'consultas' },
     { label: 'WhatsApp', icon: MessageCircle, href: '/dashboard/whatsapp', key: 'whatsapp' },
     { label: 'Affiliates', icon: Gift, href: '/dashboard/affiliate', key: 'affiliate' },
     { label: 'History', icon: Activity, href: '/dashboard/history', key: 'history' },
     { label: 'API Keys', icon: Key, href: '/dashboard/api-keys', key: 'api-keys' },
     { label: 'Billing', icon: CreditCard, href: '/dashboard/billing', key: 'billing' },
+    { label: 'Créditos', icon: Coins, href: '/dashboard/credits', key: 'credits' },
   ])
   const avatarRef = useRef<HTMLDivElement>(null)
 
