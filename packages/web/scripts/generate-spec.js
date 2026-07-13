@@ -271,7 +271,7 @@ const datasets = [
 
 function makePath(group, ds) {
   const g = groups[group]
-  const path = `/api/bigdatacorp/${group}/${ds.key}`
+  const path = `/api/consultas/${group}/${ds.key}`
   const responses = {
     '200': { description: 'Consulta realizada com sucesso', content: { 'application/json': { schema: { $ref: '#/components/schemas/QueryResponse' } } } },
     '400': { description: 'Requisição inválida' },

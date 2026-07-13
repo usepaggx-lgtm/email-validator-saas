@@ -133,7 +133,7 @@
     }
   ],
   "paths": {
-    "/api/bigdatacorp/pessoas/basic_data": {
+    "/api/consultas/pessoas/basic_data": {
       "post": {
         "tags": [
           "Pessoas"
@@ -212,7 +212,7 @@
         }
       }
     },
-    "/api/bigdatacorp/pessoas/basic_data_recent": {
+    "/api/consultas/pessoas/basic_data_recent": {
       "post": {
         "tags": [
           "Pessoas"
@@ -291,7 +291,7 @@
         }
       }
     },
-    "/api/bigdatacorp/pessoas/basic_data_history": {
+    "/api/consultas/pessoas/basic_data_history": {
       "post": {
         "tags": [
           "Pessoas"
@@ -370,7 +370,7 @@
         }
       }
     },
-    "/api/bigdatacorp/pessoas/emails": {
+    "/api/consultas/pessoas/emails": {
       "post": {
         "tags": [
           "Pessoas"
@@ -449,7 +449,7 @@
         }
       }
     },
-    "/api/bigdatacorp/pessoas/related_emails": {
+    "/api/consultas/pessoas/related_emails": {
       "post": {
         "tags": [
           "Pessoas"
@@ -528,7 +528,7 @@
         }
       }
     },
-    "/api/bigdatacorp/pessoas/phones": {
+    "/api/consultas/pessoas/phones": {
       "post": {
         "tags": [
           "Pessoas"
@@ -607,7 +607,7 @@
         }
       }
     },
-    "/api/bigdatacorp/pessoas/related_phones": {
+    "/api/consultas/pessoas/related_phones": {
       "post": {
         "tags": [
           "Pessoas"
@@ -686,7 +686,7 @@
         }
       }
     },
-    "/api/bigdatacorp/pessoas/addresses": {
+    "/api/consultas/pessoas/addresses": {
       "post": {
         "tags": [
           "Pessoas"
@@ -765,7 +765,7 @@
         }
       }
     },
-    "/api/bigdatacorp/pessoas/related_addresses": {
+    "/api/consultas/pessoas/related_addresses": {
       "post": {
         "tags": [
           "Pessoas"
@@ -844,7 +844,7 @@
         }
       }
     },
-    "/api/bigdatacorp/pessoas/registration_data": {
+    "/api/consultas/pessoas/registration_data": {
       "post": {
         "tags": [
           "Pessoas"
@@ -923,7 +923,7 @@
         }
       }
     },
-    "/api/bigdatacorp/pessoas/kyc_compliance": {
+    "/api/consultas/pessoas/kyc_compliance": {
       "post": {
         "tags": [
           "Pessoas"
@@ -1002,7 +1002,7 @@
         }
       }
     },
-    "/api/bigdatacorp/pessoas/kyc_compliance_family": {
+    "/api/consultas/pessoas/kyc_compliance_family": {
       "post": {
         "tags": [
           "Pessoas"
@@ -1081,7 +1081,7 @@
         }
       }
     },
-    "/api/bigdatacorp/pessoas/gambling_compliance": {
+    "/api/consultas/pessoas/gambling_compliance": {
       "post": {
         "tags": [
           "Pessoas"
@@ -1160,7 +1160,7 @@
         }
       }
     },
-    "/api/bigdatacorp/pessoas/online_presence": {
+    "/api/consultas/pessoas/online_presence": {
       "post": {
         "tags": [
           "Pessoas"
@@ -1239,7 +1239,7 @@
         }
       }
     },
-    "/api/bigdatacorp/pessoas/family_online_presence": {
+    "/api/consultas/pessoas/family_online_presence": {
       "post": {
         "tags": [
           "Pessoas"
@@ -1318,7 +1318,7 @@
         }
       }
     },
-    "/api/bigdatacorp/pessoas/web_passages": {
+    "/api/consultas/pessoas/web_passages": {
       "post": {
         "tags": [
           "Pessoas"
@@ -1397,7 +1397,7 @@
         }
       }
     },
-    "/api/bigdatacorp/pessoas/online_betting_propensity": {
+    "/api/consultas/pessoas/online_betting_propensity": {
       "post": {
         "tags": [
           "Pessoas"
@@ -1476,7 +1476,7 @@
         }
       }
     },
-    "/api/bigdatacorp/pessoas/digital_financial_behavior": {
+    "/api/consultas/pessoas/digital_financial_behavior": {
       "post": {
         "tags": [
           "Pessoas"
@@ -1555,7 +1555,7 @@
         }
       }
     },
-    "/api/bigdatacorp/pessoas/financial_info": {
+    "/api/consultas/pessoas/financial_info": {
       "post": {
         "tags": [
           "Pessoas"
@@ -1634,7 +1634,7 @@
         }
       }
     },
-    "/api/bigdatacorp/pessoas/family_financial_info": {
+    "/api/consultas/pessoas/family_financial_info": {
       "post": {
         "tags": [
           "Pessoas"
@@ -1713,7 +1713,7 @@
         }
       }
     },
-    "/api/bigdatacorp/pessoas/social_benefits": {
+    "/api/consultas/pessoas/social_benefits": {
       "post": {
         "tags": [
           "Pessoas"
@@ -1792,7 +1792,7 @@
         }
       }
     },
-    "/api/bigdatacorp/pessoas/family_social_benefits": {
+    "/api/consultas/pessoas/family_social_benefits": {
       "post": {
         "tags": [
           "Pessoas"
@@ -1871,7 +1871,7 @@
         }
       }
     },
-    "/api/bigdatacorp/pessoas/industrial_property": {
+    "/api/consultas/pessoas/industrial_property": {
       "post": {
         "tags": [
           "Pessoas"
@@ -1950,7 +1950,7 @@
         }
       }
     },
-    "/api/bigdatacorp/pessoas/government_debtors": {
+    "/api/consultas/pessoas/government_debtors": {
       "post": {
         "tags": [
           "Pessoas"
@@ -2029,7 +2029,7 @@
         }
       }
     },
-    "/api/bigdatacorp/pessoas/political_involvement_level": {
+    "/api/consultas/pessoas/political_involvement_level": {
       "post": {
         "tags": [
           "Pessoas"
@@ -2108,7 +2108,7 @@
         }
       }
     },
-    "/api/bigdatacorp/pessoas/electoral_candidates": {
+    "/api/consultas/pessoas/electoral_candidates": {
       "post": {
         "tags": [
           "Pessoas"
@@ -2187,7 +2187,7 @@
         }
       }
     },
-    "/api/bigdatacorp/pessoas/electoral_donations": {
+    "/api/consultas/pessoas/electoral_donations": {
       "post": {
         "tags": [
           "Pessoas"
@@ -2266,7 +2266,7 @@
         }
       }
     },
-    "/api/bigdatacorp/pessoas/family_political_history": {
+    "/api/consultas/pessoas/family_political_history": {
       "post": {
         "tags": [
           "Pessoas"
@@ -2345,7 +2345,7 @@
         }
       }
     },
-    "/api/bigdatacorp/pessoas/electoral_service_providers": {
+    "/api/consultas/pessoas/electoral_service_providers": {
       "post": {
         "tags": [
           "Pessoas"
@@ -2424,7 +2424,7 @@
         }
       }
     },
-    "/api/bigdatacorp/pessoas/popularity_data": {
+    "/api/consultas/pessoas/popularity_data": {
       "post": {
         "tags": [
           "Pessoas"
@@ -2503,7 +2503,7 @@
         }
       }
     },
-    "/api/bigdatacorp/pessoas/media_exposure": {
+    "/api/consultas/pessoas/media_exposure": {
       "post": {
         "tags": [
           "Pessoas"
@@ -2582,7 +2582,7 @@
         }
       }
     },
-    "/api/bigdatacorp/pessoas/online_ads": {
+    "/api/consultas/pessoas/online_ads": {
       "post": {
         "tags": [
           "Pessoas"
@@ -2661,7 +2661,7 @@
         }
       }
     },
-    "/api/bigdatacorp/pessoas/website_data": {
+    "/api/consultas/pessoas/website_data": {
       "post": {
         "tags": [
           "Pessoas"
@@ -2740,7 +2740,7 @@
         }
       }
     },
-    "/api/bigdatacorp/pessoas/processes": {
+    "/api/consultas/pessoas/processes": {
       "post": {
         "tags": [
           "Pessoas"
@@ -2819,7 +2819,7 @@
         }
       }
     },
-    "/api/bigdatacorp/pessoas/family_processes": {
+    "/api/consultas/pessoas/family_processes": {
       "post": {
         "tags": [
           "Pessoas"
@@ -2898,7 +2898,7 @@
         }
       }
     },
-    "/api/bigdatacorp/pessoas/process_distribution": {
+    "/api/consultas/pessoas/process_distribution": {
       "post": {
         "tags": [
           "Pessoas"
@@ -2977,7 +2977,7 @@
         }
       }
     },
-    "/api/bigdatacorp/pessoas/family_process_distribution": {
+    "/api/consultas/pessoas/family_process_distribution": {
       "post": {
         "tags": [
           "Pessoas"
@@ -3056,7 +3056,7 @@
         }
       }
     },
-    "/api/bigdatacorp/pessoas/professional_data": {
+    "/api/consultas/pessoas/professional_data": {
       "post": {
         "tags": [
           "Pessoas"
@@ -3135,7 +3135,7 @@
         }
       }
     },
-    "/api/bigdatacorp/pessoas/professional_turnover": {
+    "/api/consultas/pessoas/professional_turnover": {
       "post": {
         "tags": [
           "Pessoas"
@@ -3214,7 +3214,7 @@
         }
       }
     },
-    "/api/bigdatacorp/pessoas/academic_history": {
+    "/api/consultas/pessoas/academic_history": {
       "post": {
         "tags": [
           "Pessoas"
@@ -3293,7 +3293,7 @@
         }
       }
     },
-    "/api/bigdatacorp/pessoas/awards_certifications": {
+    "/api/consultas/pessoas/awards_certifications": {
       "post": {
         "tags": [
           "Pessoas"
@@ -3372,7 +3372,7 @@
         }
       }
     },
-    "/api/bigdatacorp/pessoas/licenses_authorizations": {
+    "/api/consultas/pessoas/licenses_authorizations": {
       "post": {
         "tags": [
           "Pessoas"
@@ -3451,7 +3451,7 @@
         }
       }
     },
-    "/api/bigdatacorp/pessoas/professional_councils": {
+    "/api/consultas/pessoas/professional_councils": {
       "post": {
         "tags": [
           "Pessoas"
@@ -3530,7 +3530,7 @@
         }
       }
     },
-    "/api/bigdatacorp/pessoas/public_servants": {
+    "/api/consultas/pessoas/public_servants": {
       "post": {
         "tags": [
           "Pessoas"
@@ -3609,7 +3609,7 @@
         }
       }
     },
-    "/api/bigdatacorp/pessoas/sports_exposure": {
+    "/api/consultas/pessoas/sports_exposure": {
       "post": {
         "tags": [
           "Pessoas"
@@ -3688,7 +3688,7 @@
         }
       }
     },
-    "/api/bigdatacorp/pessoas/financial_risk": {
+    "/api/consultas/pessoas/financial_risk": {
       "post": {
         "tags": [
           "Pessoas"
@@ -3767,7 +3767,7 @@
         }
       }
     },
-    "/api/bigdatacorp/pessoas/family_financial_risk": {
+    "/api/consultas/pessoas/family_financial_risk": {
       "post": {
         "tags": [
           "Pessoas"
@@ -3846,7 +3846,7 @@
         }
       }
     },
-    "/api/bigdatacorp/pessoas/collection_presence": {
+    "/api/consultas/pessoas/collection_presence": {
       "post": {
         "tags": [
           "Pessoas"
@@ -3925,7 +3925,7 @@
         }
       }
     },
-    "/api/bigdatacorp/pessoas/default_probability": {
+    "/api/consultas/pessoas/default_probability": {
       "post": {
         "tags": [
           "Pessoas"
@@ -4004,7 +4004,7 @@
         }
       }
     },
-    "/api/bigdatacorp/pessoas/sociodemographic_info": {
+    "/api/consultas/pessoas/sociodemographic_info": {
       "post": {
         "tags": [
           "Pessoas"
@@ -4083,7 +4083,7 @@
         }
       }
     },
-    "/api/bigdatacorp/pessoas/vehicles": {
+    "/api/consultas/pessoas/vehicles": {
       "post": {
         "tags": [
           "Pessoas"
@@ -4162,7 +4162,7 @@
         }
       }
     },
-    "/api/bigdatacorp/empresas/company_basic_data": {
+    "/api/consultas/empresas/company_basic_data": {
       "post": {
         "tags": [
           "Empresas"
@@ -4241,7 +4241,7 @@
         }
       }
     },
-    "/api/bigdatacorp/empresas/company_basic_data_history": {
+    "/api/consultas/empresas/company_basic_data_history": {
       "post": {
         "tags": [
           "Empresas"
@@ -4320,7 +4320,7 @@
         }
       }
     },
-    "/api/bigdatacorp/empresas/mcc_data": {
+    "/api/consultas/empresas/mcc_data": {
       "post": {
         "tags": [
           "Empresas"
@@ -4399,7 +4399,7 @@
         }
       }
     },
-    "/api/bigdatacorp/empresas/company_registration_data": {
+    "/api/consultas/empresas/company_registration_data": {
       "post": {
         "tags": [
           "Empresas"
@@ -4478,7 +4478,7 @@
         }
       }
     },
-    "/api/bigdatacorp/empresas/company_emails": {
+    "/api/consultas/empresas/company_emails": {
       "post": {
         "tags": [
           "Empresas"
@@ -4557,7 +4557,7 @@
         }
       }
     },
-    "/api/bigdatacorp/empresas/company_related_emails": {
+    "/api/consultas/empresas/company_related_emails": {
       "post": {
         "tags": [
           "Empresas"
@@ -4636,7 +4636,7 @@
         }
       }
     },
-    "/api/bigdatacorp/empresas/company_phones": {
+    "/api/consultas/empresas/company_phones": {
       "post": {
         "tags": [
           "Empresas"
@@ -4715,7 +4715,7 @@
         }
       }
     },
-    "/api/bigdatacorp/empresas/company_related_phones": {
+    "/api/consultas/empresas/company_related_phones": {
       "post": {
         "tags": [
           "Empresas"
@@ -4794,7 +4794,7 @@
         }
       }
     },
-    "/api/bigdatacorp/empresas/company_addresses": {
+    "/api/consultas/empresas/company_addresses": {
       "post": {
         "tags": [
           "Empresas"
@@ -4873,7 +4873,7 @@
         }
       }
     },
-    "/api/bigdatacorp/empresas/company_related_addresses": {
+    "/api/consultas/empresas/company_related_addresses": {
       "post": {
         "tags": [
           "Empresas"
@@ -4952,7 +4952,7 @@
         }
       }
     },
-    "/api/bigdatacorp/empresas/company_kyc_compliance": {
+    "/api/consultas/empresas/company_kyc_compliance": {
       "post": {
         "tags": [
           "Empresas"
@@ -5031,7 +5031,7 @@
         }
       }
     },
-    "/api/bigdatacorp/empresas/partner_kyc_compliance": {
+    "/api/consultas/empresas/partner_kyc_compliance": {
       "post": {
         "tags": [
           "Empresas"
@@ -5110,7 +5110,7 @@
         }
       }
     },
-    "/api/bigdatacorp/empresas/employee_kyc_compliance": {
+    "/api/consultas/empresas/employee_kyc_compliance": {
       "post": {
         "tags": [
           "Empresas"
@@ -5189,7 +5189,7 @@
         }
       }
     },
-    "/api/bigdatacorp/empresas/economic_group_kyc_compliance": {
+    "/api/consultas/empresas/economic_group_kyc_compliance": {
       "post": {
         "tags": [
           "Empresas"
@@ -5268,7 +5268,7 @@
         }
       }
     },
-    "/api/bigdatacorp/empresas/company_industrial_property": {
+    "/api/consultas/empresas/company_industrial_property": {
       "post": {
         "tags": [
           "Empresas"
@@ -5347,7 +5347,7 @@
         }
       }
     },
-    "/api/bigdatacorp/empresas/employee_industrial_property": {
+    "/api/consultas/empresas/employee_industrial_property": {
       "post": {
         "tags": [
           "Empresas"
@@ -5426,7 +5426,7 @@
         }
       }
     },
-    "/api/bigdatacorp/empresas/partner_industrial_property": {
+    "/api/consultas/empresas/partner_industrial_property": {
       "post": {
         "tags": [
           "Empresas"
@@ -5505,7 +5505,7 @@
         }
       }
     },
-    "/api/bigdatacorp/empresas/company_evolution": {
+    "/api/consultas/empresas/company_evolution": {
       "post": {
         "tags": [
           "Empresas"
@@ -5584,7 +5584,7 @@
         }
       }
     },
-    "/api/bigdatacorp/empresas/activity_indicators": {
+    "/api/consultas/empresas/activity_indicators": {
       "post": {
         "tags": [
           "Empresas"
@@ -5663,7 +5663,7 @@
         }
       }
     },
-    "/api/bigdatacorp/empresas/company_political_involvement": {
+    "/api/consultas/empresas/company_political_involvement": {
       "post": {
         "tags": [
           "Empresas"
@@ -5742,7 +5742,7 @@
         }
       }
     },
-    "/api/bigdatacorp/empresas/company_electoral_donations": {
+    "/api/consultas/empresas/company_electoral_donations": {
       "post": {
         "tags": [
           "Empresas"
@@ -5821,7 +5821,7 @@
         }
       }
     },
-    "/api/bigdatacorp/empresas/partner_electoral_donations": {
+    "/api/consultas/empresas/partner_electoral_donations": {
       "post": {
         "tags": [
           "Empresas"
@@ -5900,7 +5900,7 @@
         }
       }
     },
-    "/api/bigdatacorp/empresas/union_agreements": {
+    "/api/consultas/empresas/union_agreements": {
       "post": {
         "tags": [
           "Empresas"
@@ -5979,7 +5979,7 @@
         }
       }
     },
-    "/api/bigdatacorp/empresas/social_awareness": {
+    "/api/consultas/empresas/social_awareness": {
       "post": {
         "tags": [
           "Empresas"
@@ -6058,7 +6058,7 @@
         }
       }
     },
-    "/api/bigdatacorp/empresas/company_media_exposure": {
+    "/api/consultas/empresas/company_media_exposure": {
       "post": {
         "tags": [
           "Empresas"
@@ -6137,7 +6137,7 @@
         }
       }
     },
-    "/api/bigdatacorp/empresas/shareholder_influence": {
+    "/api/consultas/empresas/shareholder_influence": {
       "post": {
         "tags": [
           "Empresas"
@@ -6216,7 +6216,7 @@
         }
       }
     },
-    "/api/bigdatacorp/empresas/company_online_ads": {
+    "/api/consultas/empresas/company_online_ads": {
       "post": {
         "tags": [
           "Empresas"
@@ -6295,7 +6295,7 @@
         }
       }
     },
-    "/api/bigdatacorp/empresas/company_website_data": {
+    "/api/consultas/empresas/company_website_data": {
       "post": {
         "tags": [
           "Empresas"
@@ -6374,7 +6374,7 @@
         }
       }
     },
-    "/api/bigdatacorp/empresas/marketplaces": {
+    "/api/consultas/empresas/marketplaces": {
       "post": {
         "tags": [
           "Empresas"
@@ -6453,7 +6453,7 @@
         }
       }
     },
-    "/api/bigdatacorp/empresas/company_processes": {
+    "/api/consultas/empresas/company_processes": {
       "post": {
         "tags": [
           "Empresas"
@@ -6532,7 +6532,7 @@
         }
       }
     },
-    "/api/bigdatacorp/empresas/partner_processes": {
+    "/api/consultas/empresas/partner_processes": {
       "post": {
         "tags": [
           "Empresas"
@@ -6611,7 +6611,7 @@
         }
       }
     },
-    "/api/bigdatacorp/empresas/company_process_distribution": {
+    "/api/consultas/empresas/company_process_distribution": {
       "post": {
         "tags": [
           "Empresas"
@@ -6690,7 +6690,7 @@
         }
       }
     },
-    "/api/bigdatacorp/empresas/partner_process_distribution": {
+    "/api/consultas/empresas/partner_process_distribution": {
       "post": {
         "tags": [
           "Empresas"
@@ -6769,7 +6769,7 @@
         }
       }
     },
-    "/api/bigdatacorp/empresas/company_relationships": {
+    "/api/consultas/empresas/company_relationships": {
       "post": {
         "tags": [
           "Empresas"
@@ -6848,7 +6848,7 @@
         }
       }
     },
-    "/api/bigdatacorp/empresas/economic_group_relationships": {
+    "/api/consultas/empresas/economic_group_relationships": {
       "post": {
         "tags": [
           "Empresas"
@@ -6927,7 +6927,7 @@
         }
       }
     },
-    "/api/bigdatacorp/empresas/qsa_recent": {
+    "/api/consultas/empresas/qsa_recent": {
       "post": {
         "tags": [
           "Empresas"
@@ -7006,7 +7006,7 @@
         }
       }
     },
-    "/api/bigdatacorp/empresas/reviews_reputation": {
+    "/api/consultas/empresas/reviews_reputation": {
       "post": {
         "tags": [
           "Empresas"
@@ -7085,7 +7085,7 @@
         }
       }
     },
-    "/api/bigdatacorp/empresas/company_awards_certifications": {
+    "/api/consultas/empresas/company_awards_certifications": {
       "post": {
         "tags": [
           "Empresas"
@@ -7164,7 +7164,7 @@
         }
       }
     },
-    "/api/bigdatacorp/empresas/company_collection_presence": {
+    "/api/consultas/empresas/company_collection_presence": {
       "post": {
         "tags": [
           "Empresas"
@@ -7243,7 +7243,7 @@
         }
       }
     },
-    "/api/bigdatacorp/empresas/company_government_debtors": {
+    "/api/consultas/empresas/company_government_debtors": {
       "post": {
         "tags": [
           "Empresas"
@@ -7322,7 +7322,7 @@
         }
       }
     },
-    "/api/bigdatacorp/empresas/investment_funds_data": {
+    "/api/consultas/empresas/investment_funds_data": {
       "post": {
         "tags": [
           "Empresas"
@@ -7401,7 +7401,7 @@
         }
       }
     },
-    "/api/bigdatacorp/empresas/civil_works_data": {
+    "/api/consultas/empresas/civil_works_data": {
       "post": {
         "tags": [
           "Empresas"
@@ -7480,7 +7480,7 @@
         }
       }
     },
-    "/api/bigdatacorp/empresas/financial_market_data": {
+    "/api/consultas/empresas/financial_market_data": {
       "post": {
         "tags": [
           "Empresas"
@@ -7559,7 +7559,7 @@
         }
       }
     },
-    "/api/bigdatacorp/enderecos/company_statistics": {
+    "/api/consultas/enderecos/company_statistics": {
       "post": {
         "tags": [
           "Endereços"
@@ -7638,7 +7638,7 @@
         }
       }
     },
-    "/api/bigdatacorp/enderecos/municipalities": {
+    "/api/consultas/enderecos/municipalities": {
       "post": {
         "tags": [
           "Endereços"
@@ -7717,7 +7717,7 @@
         }
       }
     },
-    "/api/bigdatacorp/enderecos/sicar_properties": {
+    "/api/consultas/enderecos/sicar_properties": {
       "post": {
         "tags": [
           "Endereços"
@@ -7796,7 +7796,7 @@
         }
       }
     },
-    "/api/bigdatacorp/enderecos/amazon_legal": {
+    "/api/consultas/enderecos/amazon_legal": {
       "post": {
         "tags": [
           "Endereços"
@@ -7875,7 +7875,7 @@
         }
       }
     },
-    "/api/bigdatacorp/enderecos/environmental_protection_areas": {
+    "/api/consultas/enderecos/environmental_protection_areas": {
       "post": {
         "tags": [
           "Endereços"
@@ -7954,7 +7954,7 @@
         }
       }
     },
-    "/api/bigdatacorp/enderecos/biomes": {
+    "/api/consultas/enderecos/biomes": {
       "post": {
         "tags": [
           "Endereços"
@@ -8033,7 +8033,7 @@
         }
       }
     },
-    "/api/bigdatacorp/enderecos/icmbio_embargoed_areas": {
+    "/api/consultas/enderecos/icmbio_embargoed_areas": {
       "post": {
         "tags": [
           "Endereços"
@@ -8112,7 +8112,7 @@
         }
       }
     },
-    "/api/bigdatacorp/enderecos/sicar_legal_reserves": {
+    "/api/consultas/enderecos/sicar_legal_reserves": {
       "post": {
         "tags": [
           "Endereços"
@@ -8191,7 +8191,7 @@
         }
       }
     },
-    "/api/bigdatacorp/enderecos/archaeological_sites": {
+    "/api/consultas/enderecos/archaeological_sites": {
       "post": {
         "tags": [
           "Endereços"
@@ -8270,7 +8270,7 @@
         }
       }
     },
-    "/api/bigdatacorp/enderecos/indigenous_lands": {
+    "/api/consultas/enderecos/indigenous_lands": {
       "post": {
         "tags": [
           "Endereços"
@@ -8349,7 +8349,7 @@
         }
       }
     },
-    "/api/bigdatacorp/enderecos/conservation_units": {
+    "/api/consultas/enderecos/conservation_units": {
       "post": {
         "tags": [
           "Endereços"
@@ -8428,7 +8428,7 @@
         }
       }
     },
-    "/api/bigdatacorp/enderecos/agroecological_zoning": {
+    "/api/consultas/enderecos/agroecological_zoning": {
       "post": {
         "tags": [
           "Endereços"
@@ -8507,7 +8507,7 @@
         }
       }
     },
-    "/api/bigdatacorp/enderecos/address_risk_area": {
+    "/api/consultas/enderecos/address_risk_area": {
       "post": {
         "tags": [
           "Endereços"
@@ -8586,7 +8586,7 @@
         }
       }
     },
-    "/api/bigdatacorp/enderecos/crime_statistics": {
+    "/api/consultas/enderecos/crime_statistics": {
       "post": {
         "tags": [
           "Endereços"
@@ -8665,7 +8665,7 @@
         }
       }
     },
-    "/api/bigdatacorp/veiculos/vehicle_plate_history": {
+    "/api/consultas/veiculos/vehicle_plate_history": {
       "post": {
         "tags": [
           "Veículos"
@@ -8744,7 +8744,7 @@
         }
       }
     },
-    "/api/bigdatacorp/processos/cade_processes": {
+    "/api/consultas/processos/cade_processes": {
       "post": {
         "tags": [
           "Processos"
@@ -8823,7 +8823,7 @@
         }
       }
     },
-    "/api/bigdatacorp/produtos/product_specifications": {
+    "/api/consultas/produtos/product_specifications": {
       "post": {
         "tags": [
           "Produtos"
@@ -8902,7 +8902,7 @@
         }
       }
     },
-    "/api/bigdatacorp/produtos/product_images": {
+    "/api/consultas/produtos/product_images": {
       "post": {
         "tags": [
           "Produtos"
@@ -8981,7 +8981,7 @@
         }
       }
     },
-    "/api/bigdatacorp/produtos/current_price": {
+    "/api/consultas/produtos/current_price": {
       "post": {
         "tags": [
           "Produtos"
@@ -9060,7 +9060,7 @@
         }
       }
     },
-    "/api/bigdatacorp/produtos/price_history": {
+    "/api/consultas/produtos/price_history": {
       "post": {
         "tags": [
           "Produtos"
@@ -9139,7 +9139,7 @@
         }
       }
     },
-    "/api/bigdatacorp/produtos/related_products": {
+    "/api/consultas/produtos/related_products": {
       "post": {
         "tags": [
           "Produtos"
@@ -9218,7 +9218,7 @@
         }
       }
     },
-    "/api/bigdatacorp/produtos/product_ratings": {
+    "/api/consultas/produtos/product_ratings": {
       "post": {
         "tags": [
           "Produtos"
@@ -9297,7 +9297,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/labor_claims_certificate": {
+    "/api/consultas/ondemand/labor_claims_certificate": {
       "post": {
         "tags": [
           "On Demand"
@@ -9376,7 +9376,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/disabled_persons_hiring": {
+    "/api/consultas/ondemand/disabled_persons_hiring": {
       "post": {
         "tags": [
           "On Demand"
@@ -9455,7 +9455,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/cgu_negative_certificate": {
+    "/api/consultas/ondemand/cgu_negative_certificate": {
       "post": {
         "tags": [
           "On Demand"
@@ -9534,7 +9534,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/cnj_negative_certificate": {
+    "/api/consultas/ondemand/cnj_negative_certificate": {
       "post": {
         "tags": [
           "On Demand"
@@ -9613,7 +9613,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/state_debts_negative": {
+    "/api/consultas/ondemand/state_debts_negative": {
       "post": {
         "tags": [
           "On Demand"
@@ -9692,7 +9692,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/labor_debts_negative": {
+    "/api/consultas/ondemand/labor_debts_negative": {
       "post": {
         "tags": [
           "On Demand"
@@ -9771,7 +9771,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/fgts_certificate": {
+    "/api/consultas/ondemand/fgts_certificate": {
       "post": {
         "tags": [
           "On Demand"
@@ -9850,7 +9850,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/comex_habilitation": {
+    "/api/consultas/ondemand/comex_habilitation": {
       "post": {
         "tags": [
           "On Demand"
@@ -9929,7 +9929,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/ibama_embargoes_certificate": {
+    "/api/consultas/ondemand/ibama_embargoes_certificate": {
       "post": {
         "tags": [
           "On Demand"
@@ -10008,7 +10008,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/ibama_negative_certificate": {
+    "/api/consultas/ondemand/ibama_negative_certificate": {
       "post": {
         "tags": [
           "On Demand"
@@ -10087,7 +10087,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/ibama_regulatory": {
+    "/api/consultas/ondemand/ibama_regulatory": {
       "post": {
         "tags": [
           "On Demand"
@@ -10166,7 +10166,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/irt_certificate": {
+    "/api/consultas/ondemand/irt_certificate": {
       "post": {
         "tags": [
           "On Demand"
@@ -10245,7 +10245,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/health_licenses": {
+    "/api/consultas/ondemand/health_licenses": {
       "post": {
         "tags": [
           "On Demand"
@@ -10324,7 +10324,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/pgfn_certificate": {
+    "/api/consultas/ondemand/pgfn_certificate": {
       "post": {
         "tags": [
           "On Demand"
@@ -10403,7 +10403,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/siproquim": {
+    "/api/consultas/ondemand/siproquim": {
       "post": {
         "tags": [
           "On Demand"
@@ -10482,7 +10482,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/sicar_certificate": {
+    "/api/consultas/ondemand/sicar_certificate": {
       "post": {
         "tags": [
           "On Demand"
@@ -10561,7 +10561,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/federal_court_lawsuit_certificate": {
+    "/api/consultas/ondemand/federal_court_lawsuit_certificate": {
       "post": {
         "tags": [
           "On Demand"
@@ -10640,7 +10640,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/person_labor_claims": {
+    "/api/consultas/ondemand/person_labor_claims": {
       "post": {
         "tags": [
           "On Demand"
@@ -10719,7 +10719,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/cgu_correctional_negative": {
+    "/api/consultas/ondemand/cgu_correctional_negative": {
       "post": {
         "tags": [
           "On Demand"
@@ -10798,7 +10798,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/person_cnj_negative": {
+    "/api/consultas/ondemand/person_cnj_negative": {
       "post": {
         "tags": [
           "On Demand"
@@ -10877,7 +10877,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/person_state_debts_negative": {
+    "/api/consultas/ondemand/person_state_debts_negative": {
       "post": {
         "tags": [
           "On Demand"
@@ -10956,7 +10956,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/person_labor_debts_negative": {
+    "/api/consultas/ondemand/person_labor_debts_negative": {
       "post": {
         "tags": [
           "On Demand"
@@ -11035,7 +11035,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/person_ibama_embargoes": {
+    "/api/consultas/ondemand/person_ibama_embargoes": {
       "post": {
         "tags": [
           "On Demand"
@@ -11114,7 +11114,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/person_ibama_negative": {
+    "/api/consultas/ondemand/person_ibama_negative": {
       "post": {
         "tags": [
           "On Demand"
@@ -11193,7 +11193,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/person_ibama_regularity": {
+    "/api/consultas/ondemand/person_ibama_regularity": {
       "post": {
         "tags": [
           "On Demand"
@@ -11272,7 +11272,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/person_irt": {
+    "/api/consultas/ondemand/person_irt": {
       "post": {
         "tags": [
           "On Demand"
@@ -11351,7 +11351,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/person_health_licenses": {
+    "/api/consultas/ondemand/person_health_licenses": {
       "post": {
         "tags": [
           "On Demand"
@@ -11430,7 +11430,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/person_pgfn": {
+    "/api/consultas/ondemand/person_pgfn": {
       "post": {
         "tags": [
           "On Demand"
@@ -11509,7 +11509,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/civil_police_criminal_record": {
+    "/api/consultas/ondemand/civil_police_criminal_record": {
       "post": {
         "tags": [
           "On Demand"
@@ -11588,7 +11588,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/federal_police_criminal_record": {
+    "/api/consultas/ondemand/federal_police_criminal_record": {
       "post": {
         "tags": [
           "On Demand"
@@ -11667,7 +11667,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/tse_electoral_certificate": {
+    "/api/consultas/ondemand/tse_electoral_certificate": {
       "post": {
         "tags": [
           "On Demand"
@@ -11746,7 +11746,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/mei_das_collection": {
+    "/api/consultas/ondemand/mei_das_collection": {
       "post": {
         "tags": [
           "On Demand"
@@ -11825,7 +11825,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/cadin_debts": {
+    "/api/consultas/ondemand/cadin_debts": {
       "post": {
         "tags": [
           "On Demand"
@@ -11904,7 +11904,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/comprot_processes": {
+    "/api/consultas/ondemand/comprot_processes": {
       "post": {
         "tags": [
           "On Demand"
@@ -11983,7 +11983,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/municipal_registration": {
+    "/api/consultas/ondemand/municipal_registration": {
       "post": {
         "tags": [
           "On Demand"
@@ -12062,7 +12062,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/simples_nacional_optant": {
+    "/api/consultas/ondemand/simples_nacional_optant": {
       "post": {
         "tags": [
           "On Demand"
@@ -12141,7 +12141,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/public_projects": {
+    "/api/consultas/ondemand/public_projects": {
       "post": {
         "tags": [
           "On Demand"
@@ -12220,7 +12220,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/qsa_receita": {
+    "/api/consultas/ondemand/qsa_receita": {
       "post": {
         "tags": [
           "On Demand"
@@ -12299,7 +12299,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/legal_representative": {
+    "/api/consultas/ondemand/legal_representative": {
       "post": {
         "tags": [
           "On Demand"
@@ -12378,7 +12378,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/cnpj_situation": {
+    "/api/consultas/ondemand/cnpj_situation": {
       "post": {
         "tags": [
           "On Demand"
@@ -12457,7 +12457,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/sintegra": {
+    "/api/consultas/ondemand/sintegra": {
       "post": {
         "tags": [
           "On Demand"
@@ -12536,7 +12536,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/bacen_sanctions": {
+    "/api/consultas/ondemand/bacen_sanctions": {
       "post": {
         "tags": [
           "On Demand"
@@ -12615,7 +12615,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/person_cadin_debts": {
+    "/api/consultas/ondemand/person_cadin_debts": {
       "post": {
         "tags": [
           "On Demand"
@@ -12694,7 +12694,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/person_comprot_processes": {
+    "/api/consultas/ondemand/person_comprot_processes": {
       "post": {
         "tags": [
           "On Demand"
@@ -12773,7 +12773,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/detran_traffic_fines": {
+    "/api/consultas/ondemand/detran_traffic_fines": {
       "post": {
         "tags": [
           "On Demand"
@@ -12852,7 +12852,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/cpf_status": {
+    "/api/consultas/ondemand/cpf_status": {
       "post": {
         "tags": [
           "On Demand"
@@ -12931,7 +12931,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/person_sintegra": {
+    "/api/consultas/ondemand/person_sintegra": {
       "post": {
         "tags": [
           "On Demand"
@@ -13010,7 +13010,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/sus_card": {
+    "/api/consultas/ondemand/sus_card": {
       "post": {
         "tags": [
           "On Demand"
@@ -13089,7 +13089,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/tse_voting_location": {
+    "/api/consultas/ondemand/tse_voting_location": {
       "post": {
         "tags": [
           "On Demand"
@@ -13168,7 +13168,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/cte": {
+    "/api/consultas/ondemand/cte": {
       "post": {
         "tags": [
           "On Demand"
@@ -13247,7 +13247,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/nfe": {
+    "/api/consultas/ondemand/nfe": {
       "post": {
         "tags": [
           "On Demand"
@@ -13326,7 +13326,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/detran_chassis_renavam": {
+    "/api/consultas/ondemand/detran_chassis_renavam": {
       "post": {
         "tags": [
           "On Demand"
@@ -13405,7 +13405,7 @@
         }
       }
     },
-    "/api/bigdatacorp/ondemand/rntrc_transporters": {
+    "/api/consultas/ondemand/rntrc_transporters": {
       "post": {
         "tags": [
           "On Demand"
@@ -13484,7 +13484,7 @@
         }
       }
     },
-    "/api/bigdatacorp/marketplace/scr_positive_score": {
+    "/api/consultas/marketplace/scr_positive_score": {
       "post": {
         "tags": [
           "Marketplace"
@@ -13563,7 +13563,7 @@
         }
       }
     },
-    "/api/bigdatacorp/marketplace/bureau_restrictive_data": {
+    "/api/consultas/marketplace/bureau_restrictive_data": {
       "post": {
         "tags": [
           "Marketplace"
@@ -13642,7 +13642,7 @@
         }
       }
     },
-    "/api/bigdatacorp/marketplace/quod_restrictive_data": {
+    "/api/consultas/marketplace/quod_restrictive_data": {
       "post": {
         "tags": [
           "Marketplace"
@@ -13721,7 +13721,7 @@
         }
       }
     },
-    "/api/bigdatacorp/marketplace/quod_negative_flags": {
+    "/api/consultas/marketplace/quod_negative_flags": {
       "post": {
         "tags": [
           "Marketplace"
@@ -13800,7 +13800,7 @@
         }
       }
     },
-    "/api/bigdatacorp/marketplace/multidata_credit_score": {
+    "/api/consultas/marketplace/multidata_credit_score": {
       "post": {
         "tags": [
           "Marketplace"
@@ -13879,7 +13879,7 @@
         }
       }
     },
-    "/api/bigdatacorp/marketplace/murabei_credit_score": {
+    "/api/consultas/marketplace/murabei_credit_score": {
       "post": {
         "tags": [
           "Marketplace"
@@ -13958,7 +13958,7 @@
         }
       }
     },
-    "/api/bigdatacorp/marketplace/quantum_credit_score": {
+    "/api/consultas/marketplace/quantum_credit_score": {
       "post": {
         "tags": [
           "Marketplace"
@@ -14037,7 +14037,7 @@
         }
       }
     },
-    "/api/bigdatacorp/marketplace/quod_credit_score": {
+    "/api/consultas/marketplace/quod_credit_score": {
       "post": {
         "tags": [
           "Marketplace"
@@ -14116,7 +14116,7 @@
         }
       }
     },
-    "/api/bigdatacorp/marketplace/b2e_risk_classification": {
+    "/api/consultas/marketplace/b2e_risk_classification": {
       "post": {
         "tags": [
           "Marketplace"
@@ -14195,7 +14195,7 @@
         }
       }
     },
-    "/api/bigdatacorp/marketplace/person_scr_positive_score": {
+    "/api/consultas/marketplace/person_scr_positive_score": {
       "post": {
         "tags": [
           "Marketplace"
@@ -14274,7 +14274,7 @@
         }
       }
     },
-    "/api/bigdatacorp/marketplace/person_bureau_restrictive": {
+    "/api/consultas/marketplace/person_bureau_restrictive": {
       "post": {
         "tags": [
           "Marketplace"
@@ -14353,7 +14353,7 @@
         }
       }
     },
-    "/api/bigdatacorp/marketplace/person_quod_restrictive": {
+    "/api/consultas/marketplace/person_quod_restrictive": {
       "post": {
         "tags": [
           "Marketplace"
@@ -14432,7 +14432,7 @@
         }
       }
     },
-    "/api/bigdatacorp/marketplace/person_quod_negative_flags": {
+    "/api/consultas/marketplace/person_quod_negative_flags": {
       "post": {
         "tags": [
           "Marketplace"
@@ -14511,7 +14511,7 @@
         }
       }
     },
-    "/api/bigdatacorp/marketplace/person_multidata_score": {
+    "/api/consultas/marketplace/person_multidata_score": {
       "post": {
         "tags": [
           "Marketplace"
@@ -14590,7 +14590,7 @@
         }
       }
     },
-    "/api/bigdatacorp/marketplace/person_quantum_score": {
+    "/api/consultas/marketplace/person_quantum_score": {
       "post": {
         "tags": [
           "Marketplace"
@@ -14669,7 +14669,7 @@
         }
       }
     },
-    "/api/bigdatacorp/marketplace/person_quod_score": {
+    "/api/consultas/marketplace/person_quod_score": {
       "post": {
         "tags": [
           "Marketplace"
@@ -14748,7 +14748,7 @@
         }
       }
     },
-    "/api/bigdatacorp/marketplace/quantum_revolving_score": {
+    "/api/consultas/marketplace/quantum_revolving_score": {
       "post": {
         "tags": [
           "Marketplace"
@@ -14827,7 +14827,7 @@
         }
       }
     },
-    "/api/bigdatacorp/marketplace/shareholding_percentage": {
+    "/api/consultas/marketplace/shareholding_percentage": {
       "post": {
         "tags": [
           "Marketplace"
@@ -14906,7 +14906,7 @@
         }
       }
     },
-    "/api/bigdatacorp/marketplace/ubo_final_beneficiaries": {
+    "/api/consultas/marketplace/ubo_final_beneficiaries": {
       "post": {
         "tags": [
           "Marketplace"
@@ -14985,7 +14985,7 @@
         }
       }
     },
-    "/api/bigdatacorp/marketplace/fuel_prices_region": {
+    "/api/consultas/marketplace/fuel_prices_region": {
       "post": {
         "tags": [
           "Marketplace"
@@ -15064,7 +15064,7 @@
         }
       }
     },
-    "/api/bigdatacorp/marketplace/property_qualification": {
+    "/api/consultas/marketplace/property_qualification": {
       "post": {
         "tags": [
           "Marketplace"
@@ -15143,7 +15143,7 @@
         }
       }
     },
-    "/api/bigdatacorp/marketplace/device_cadaster_telesign": {
+    "/api/consultas/marketplace/device_cadaster_telesign": {
       "post": {
         "tags": [
           "Marketplace"
@@ -15222,7 +15222,7 @@
         }
       }
     },
-    "/api/bigdatacorp/marketplace/portability_history_telesign": {
+    "/api/consultas/marketplace/portability_history_telesign": {
       "post": {
         "tags": [
           "Marketplace"
@@ -15301,7 +15301,7 @@
         }
       }
     },
-    "/api/bigdatacorp/marketplace/quality_score_blu365": {
+    "/api/consultas/marketplace/quality_score_blu365": {
       "post": {
         "tags": [
           "Marketplace"
@@ -15380,7 +15380,7 @@
         }
       }
     },
-    "/api/bigdatacorp/marketplace/risk_score_telesign": {
+    "/api/consultas/marketplace/risk_score_telesign": {
       "post": {
         "tags": [
           "Marketplace"
@@ -15459,7 +15459,7 @@
         }
       }
     },
-    "/api/bigdatacorp/marketplace/sms_delivery_status_blu365": {
+    "/api/consultas/marketplace/sms_delivery_status_blu365": {
       "post": {
         "tags": [
           "Marketplace"
@@ -15538,7 +15538,7 @@
         }
       }
     },
-    "/api/bigdatacorp/marketplace/portability_status_telesign": {
+    "/api/consultas/marketplace/portability_status_telesign": {
       "post": {
         "tags": [
           "Marketplace"
@@ -15617,7 +15617,7 @@
         }
       }
     },
-    "/api/bigdatacorp/marketplace/subscriber_status_telesign": {
+    "/api/consultas/marketplace/subscriber_status_telesign": {
       "post": {
         "tags": [
           "Marketplace"
@@ -15696,7 +15696,7 @@
         }
       }
     },
-    "/api/bigdatacorp/marketplace/ip_risk_data": {
+    "/api/consultas/marketplace/ip_risk_data": {
       "post": {
         "tags": [
           "Marketplace"
@@ -15775,7 +15775,7 @@
         }
       }
     },
-    "/api/bigdatacorp/modelagem/unified_modeling_x1_0_person": {
+    "/api/consultas/modelagem/unified_modeling_x1_0_person": {
       "post": {
         "tags": [
           "Modelagem"
@@ -15854,7 +15854,7 @@
         }
       }
     },
-    "/api/bigdatacorp/modelagem/unified_modeling_x1_5_person": {
+    "/api/consultas/modelagem/unified_modeling_x1_5_person": {
       "post": {
         "tags": [
           "Modelagem"
@@ -15933,7 +15933,7 @@
         }
       }
     },
-    "/api/bigdatacorp/modelagem/unified_modeling_x1_0_company": {
+    "/api/consultas/modelagem/unified_modeling_x1_0_company": {
       "post": {
         "tags": [
           "Modelagem"
@@ -16012,7 +16012,7 @@
         }
       }
     },
-    "/api/bigdatacorp/modelagem/unified_modeling_x1_5_company": {
+    "/api/consultas/modelagem/unified_modeling_x1_5_company": {
       "post": {
         "tags": [
           "Modelagem"

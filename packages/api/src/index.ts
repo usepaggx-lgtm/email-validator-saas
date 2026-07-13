@@ -1471,7 +1471,7 @@ app.post('/api/admin/plans/sync-stripe', async (c) => {
 app.get('/api/admin/credentials', async (c) => {
   const user = await getUserFromToken(c)
   if (!user || !user.is_admin) return c.json({ error: 'Forbidden' }, 403)
-  const keys = ['stripe_secret_key', 'stripe_publishable_key', 'stripe_webhook_secret', 'smtp_verifier', 'crawler_url', 'bdc_access_token', 'bdc_token_id']
+  const keys = ['stripe_secret_key', 'stripe_publishable_key', 'stripe_webhook_secret', 'smtp_verifier', 'crawler_url', 'consultas_access_token', 'consultas_token_id']
   const result: any[] = []
   for (const key of keys) {
     const val = await c.env.EV_KV.get(`cred:${key}`)
@@ -1728,7 +1728,7 @@ app.post('/api/affiliate/track-ref', async (c) => {
 
 app.get('/api/health', (c) => c.json({ status: 'ok', timestamp: Date.now() }))
 
-const BIGDATACORP_BASE = 'https://plataforma.bigdatacorp.com.br'
+const PLATFORM_BASE = 'https://plataforma.bigdatacorp.com.br'
 
 async function getCredits(userId: string, db: D1Database): Promise<number> {
   const row = await db.prepare('SELECT balance FROM credit_balance WHERE user_id = ?').bind(userId).first() as any
@@ -1811,7 +1811,7 @@ app.post('/api/stripe/credits-webhook', async (c) => {
   return c.json({ received: true })
 })
 
-app.get('/api/bigdatacorp/pricing', async (c) => {
+app.get('/api/consultas/pricing', async (c) => {
   const user = await getUserFromToken(c)
   if (!user) return c.json({ error: 'Unauthorized' }, 401)
   const groups = await c.env.DB.prepare('SELECT DISTINCT api_group FROM product_pricing WHERE product = \'consultas\' AND is_active = 1 ORDER BY api_group').all()
@@ -1828,7 +1828,7 @@ const BDC_GROUP_ENDPOINTS: Record<string, string> = {
   ondemand: '/ondemand', marketplace: '/marketplace', modelagem: '/modelagem',
 }
 
-app.post('/api/bigdatacorp/:group/:dataset', async (c) => {
+app.post('/api/consultas/:group/:dataset', async (c) => {
   const user = await getUserFromToken(c)
   if (!user) return c.json({ error: 'Unauthorized' }, 401)
   const group = c.req.param('group')
@@ -1840,14 +1840,14 @@ app.post('/api/bigdatacorp/:group/:dataset', async (c) => {
   const creditCost = pricing.credit_cost
   const balance = await getCredits(user.id, c.env.DB)
   if (balance < creditCost) return c.json({ error: 'Saldo insuficiente', required_cents: creditCost, balance_cents: balance }, 402)
-  const accessToken = await c.env.EV_KV.get('cred:bdc_access_token')
-  const tokenId = await c.env.EV_KV.get('cred:bdc_token_id')
-  if (!accessToken || !tokenId) return c.json({ error: 'BigDataCorp not configured' }, 500)
+  const accessToken = await c.env.EV_KV.get('cred:consultas_access_token')
+  const tokenId = await c.env.EV_KV.get('cred:consultas_token_id')
+  if (!accessToken || !tokenId) return c.json({ error: 'Serviço não configurado' }, 500)
   const { q, limit } = await c.req.json() as any
   if (!q) return c.json({ error: 'q (query) is required' }, 400)
   const start = Date.now()
   try {
-    const res = await fetch(`${BIGDATACORP_BASE}${endpoint}`, {
+    const res = await fetch(`${PLATFORM_BASE}${endpoint}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', AccessToken: accessToken, TokenId: tokenId, Accept: 'application/json' },
       body: JSON.stringify({ q, Datasets: dataset, Limit: limit || 10 }),
@@ -1856,56 +1856,48 @@ app.post('/api/bigdatacorp/:group/:dataset', async (c) => {
     const data = await res.json()
     const bdcQueryId = data.QueryId || ''
     const status = res.ok ? 'success' : 'error'
-    await deductCredits(user.id, creditCost, c.env.DB, `Consulta ${dataset} (${group})`, 'bigdatacorp', bdcQueryId)
+    await deductCredits(user.id, creditCost, c.env.DB, `Consulta ${dataset} (${group})`, 'consultas', bdcQueryId)
     await c.env.DB.prepare('INSERT INTO consultas_queries (user_id, api_group, dataset, query_text, credit_cost, response_status, bigdatacorp_query_id, elapsed_ms, response_preview) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)').bind(user.id, group, dataset, q, creditCost, status, bdcQueryId, elapsed, JSON.stringify(data).slice(0, 500)).run()
     return c.json({ ...data, _meta: { balance_cents: await getCredits(user.id, c.env.DB), cost_cents: creditCost, elapsed_ms: elapsed } })
   } catch (e: any) {
     await c.env.DB.prepare('INSERT INTO consultas_queries (user_id, api_group, dataset, query_text, credit_cost, response_status, elapsed_ms) VALUES (?, ?, ?, ?, ?, ?, ?)').bind(user.id, group, dataset, q, creditCost, 'error', Date.now() - start).run()
-    return c.json({ error: 'BigDataCorp request failed', detail: e.message }, 502)
+    return c.json({ error: 'Consulta não disponível', detail: e.message }, 502)
   }
 })
 
-app.post('/api/bigdatacorp/:group', async (c) => {
+app.post('/api/consultas/:group', async (c) => {
   const user = await getUserFromToken(c)
   if (!user) return c.json({ error: 'Unauthorized' }, 401)
   const group = c.req.param('group')
   const endpoint = BDC_GROUP_ENDPOINTS[group]
   if (!endpoint) return c.json({ error: 'Invalid API group' }, 400)
-
   const { q, dataset, limit } = await c.req.json() as any
   if (!q || !dataset) return c.json({ error: 'q (query) and dataset are required' }, 400)
-
   const pricing = await c.env.DB.prepare('SELECT credit_cost FROM product_pricing WHERE product = \'consultas\' AND api_group = ? AND dataset_key = ? AND is_active = 1').bind(group, dataset).first() as any
   if (!pricing) return c.json({ error: 'Invalid or inactive dataset' }, 400)
-
   const creditCost = pricing.credit_cost
   const balance = await getCredits(user.id, c.env.DB)
   if (balance < creditCost) return c.json({ error: 'Saldo insuficiente', required_cents: creditCost, balance_cents: balance }, 402)
-
-  const accessToken = await c.env.EV_KV.get('cred:bdc_access_token')
-  const tokenId = await c.env.EV_KV.get('cred:bdc_token_id')
-  if (!accessToken || !tokenId) return c.json({ error: 'BigDataCorp not configured' }, 500)
-
+  const accessToken = await c.env.EV_KV.get('cred:consultas_access_token')
+  const tokenId = await c.env.EV_KV.get('cred:consultas_token_id')
+  if (!accessToken || !tokenId) return c.json({ error: 'Serviço não configurado' }, 500)
   const start = Date.now()
   try {
-    const res = await fetch(`${BIGDATACORP_BASE}${endpoint}`, {
+    const res = await fetch(`${PLATFORM_BASE}${endpoint}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', AccessToken: accessToken, TokenId: tokenId, Accept: 'application/json' },
       body: JSON.stringify({ q, Datasets: dataset, Limit: limit || 10 }),
     })
     const elapsed = Date.now() - start
     const data = await res.json()
-
     const bdcQueryId = data.QueryId || ''
     const status = res.ok ? 'success' : 'error'
-
-    await deductCredits(user.id, creditCost, c.env.DB, `Consulta ${dataset} (${group})`, 'bigdatacorp', bdcQueryId)
+    await deductCredits(user.id, creditCost, c.env.DB, `Consulta ${dataset} (${group})`, 'consultas', bdcQueryId)
     await c.env.DB.prepare('INSERT INTO consultas_queries (user_id, api_group, dataset, query_text, credit_cost, response_status, bigdatacorp_query_id, elapsed_ms, response_preview) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)').bind(user.id, group, dataset, q, creditCost, status, bdcQueryId, elapsed, JSON.stringify(data).slice(0, 500)).run()
-
     return c.json({ ...data, _meta: { balance_cents: await getCredits(user.id, c.env.DB), cost_cents: creditCost, elapsed_ms: elapsed } })
   } catch (e: any) {
     await c.env.DB.prepare('INSERT INTO consultas_queries (user_id, api_group, dataset, query_text, credit_cost, response_status, elapsed_ms) VALUES (?, ?, ?, ?, ?, ?, ?)').bind(user.id, group, dataset, q, creditCost, 'error', Date.now() - start).run()
-    return c.json({ error: 'BigDataCorp request failed', detail: e.message }, 502)
+    return c.json({ error: 'Consulta não disponível', detail: e.message }, 502)
   }
 })
 
@@ -1938,7 +1930,7 @@ app.get('/api/admin/credits/users', async (c) => {
   return c.json({ users: rows.results })
 })
 
-app.get('/api/admin/bigdatacorp/pricing', async (c) => {
+app.get('/api/admin/consultas/pricing', async (c) => {
   const admin = await getUserFromToken(c)
   if (!admin || !admin.is_admin) return c.json({ error: 'Forbidden' }, 403)
   const group = c.req.query('group') || ''
@@ -1947,7 +1939,7 @@ app.get('/api/admin/bigdatacorp/pricing', async (c) => {
   return c.json({ pricing: rows.results })
 })
 
-app.put('/api/admin/bigdatacorp/pricing/:id', async (c) => {
+app.put('/api/admin/consultas/pricing/:id', async (c) => {
   const admin = await getUserFromToken(c)
   if (!admin || !admin.is_admin) return c.json({ error: 'Forbidden' }, 403)
   const id = c.req.param('id')
