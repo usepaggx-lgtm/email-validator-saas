@@ -9,25 +9,32 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
     #api-docs { min-height: 100vh; }
+    .loading { display: flex; align-items: center; justify-content: center; min-height: 100vh; color: #6b7280; font-size: 14px; }
   </style>
 </head>
 <body>
-  <div id="api-docs"></div>
-  <script type="module">
-    import { createApiReference } from 'https://cdn.jsdelivr.net/npm/@scalar/api-reference@latest/dist/browser/standalone.js'
-    createApiReference('#api-docs', {
-      spec: { url: '/specs/consultas.json' },
-      darkMode: false,
-      showSidebar: true,
-      hideModels: false,
-      hideDownloadButton: false,
-      hideTestRequestButton: false,
-      defaultHttpClient: { targetKey: 'node', clientKey: 'fetch' },
-      metaData: {
-        title: 'Consultas API',
-        description: 'API de consulta a dados cadastrais, financeiros, judiciais e de compliance de pessoas e empresas brasileiras.',
-      },
-    })
+  <div id="api-docs"><div class="loading">Carregando documentação...</div></div>
+  <script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference"></script>
+  <script>
+    setTimeout(function() {
+      if (typeof Scalar !== 'undefined' && Scalar.createApiReference) {
+        Scalar.createApiReference('#api-docs', {
+          spec: { url: '/specs/consultas.json' },
+          darkMode: false,
+          showSidebar: true,
+          hideModels: false,
+          hideDownloadButton: false,
+          hideTestRequestButton: false,
+          defaultHttpClient: { targetKey: 'node', clientKey: 'fetch' },
+          metaData: {
+            title: 'Consultas API',
+            description: 'API de consulta a dados cadastrais, financeiros, judiciais e de compliance de pessoas e empresas brasileiras.',
+          },
+        })
+      } else {
+        document.getElementById('api-docs').innerHTML = '<div class="loading">Erro ao carregar documentação. Tente recarregar a página.</div>'
+      }
+    }, 1000)
   </script>
 </body>
 </html>
